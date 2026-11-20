@@ -3,6 +3,8 @@
 	title = {{DIN}-{SQL}: {Decomposed} {In}-{Context} {Learning} of {Text}-to-{SQL} with {Self}-{Correction}},
 	author = {Pourreza, Mohammadreza and Rafiei, Davood},
 	year = {2023},
+	url={https://arxiv.org/abs/2304.11015},
+	eprint={2304.11015},
 	note = {arXiv:2304.11015
 howpublished: arXiv preprint arXiv:2304.11015},
 }
@@ -11,6 +13,7 @@ howpublished: arXiv preprint arXiv:2304.11015},
 	title = {C3: {Zero}-{Shot} {Text}-to-{SQL} with {ChatGPT}},
 	author = {Dong, Xuemei and Zhang, Chao and Ge, Yuhang and Mao, Yuren and Gao, Yunjun and Chen, Lu and Lin, Jinshu and Lou, Dongfang},
 	year = {2023},
+	url = {https://arxiv.org/abs/2307.07306},
 	note = {arXiv:2307.07306
 howpublished: arXiv preprint arXiv:2307.07306},
 }
@@ -19,6 +22,7 @@ howpublished: arXiv preprint arXiv:2307.07306},
 	title = {Can {LLM} {Already} {Serve} as {A} {Database} {Interface}? {A} {BIg} {Bench} for {Large}-{Scale} {Database} {Grounded} {Text}-to-{SQLs}},
 	author = {Li, Jinyang and Hui, Binyuan and Qu, Ge and Yang, Jiaxi and Li, Binhua and Li, Bowen and Wang, Bailin and Qin, Bowen and Geng, Ruiying and Huo, Nan and Zhou, Xuanhe and Ma, Chenhao and Li, Guoliang and Chang, Kevin C. C. and Huang, Fei and Cheng, Reynold and Li, Yongbin},
 	year = {2023},
+	url = {https://arxiv.org/abs/2305.03111},
 	note = {arXiv:2305.03111
 howpublished: arXiv preprint arXiv:2305.03111},
 }
@@ -28,6 +32,7 @@ howpublished: arXiv preprint arXiv:2305.03111},
 	booktitle = {Proceedings of the 2024 {Conference} of the {North} {American} {Chapter} of the {Association} for {Computational} {Linguistics} ({NAACL})},
 	author = {Wang, Bing and Ren, Changyu and Yang, Jian and Liang, Xinnian and Bai, Jiaqi and Zhang, Qian-Wen and Yan, Zhao and Li, Zhoujun},
 	year = {2024},
+	url = {https://arxiv.org/abs/2312.11242},
 	note = {arXiv:2312.11242
 howpublished: arXiv preprint arXiv:2312.11242},
 }
@@ -36,6 +41,7 @@ howpublished: arXiv preprint arXiv:2312.11242},
 	title = {{CHESS}: {Contextual} {Harnessing} for {Efficient} {SQL} {Synthesis}},
 	author = {Talaei, Shayan and Pourreza, Mohammadreza and Chang, Yu-Chen and Mirhoseini, Azalia and Saberi, Amin},
 	year = {2024},
+	url = {https://arxiv.org/abs/2405.16755},
 	note = {arXiv:2405.16755
 howpublished: arXiv preprint arXiv:2405.16755},
 }
@@ -44,6 +50,7 @@ howpublished: arXiv preprint arXiv:2405.16755},
 	title = {{MCS}-{SQL}: {Leveraging} {Multiple} {Prompts} and {Multiple}-{Choice} {Selection} for {Text}-to-{SQL}},
 	author = {Lee, Dongjun and Park, Choongwon and Kim, Jaehyuk and Park, Heesoo},
 	year = {2024},
+	url = {https://arxiv.org/abs/2405.07467},
 	note = {arXiv:2405.07467
 howpublished: arXiv preprint arXiv:2405.07467},
 }
@@ -242,4 +249,209 @@ howpublished: arXiv preprint arXiv:2405.07467},
 	month = dec,
 	year = {2024},
 	note = {arXiv:2412.12522},
+}
+@comment{
+ category={Generate-then-rank \& self-correction},
+ cites={MAC-SQL},
+}
+@article{Liu_2026,
+   title={XiYan-SQL: A Novel Multi-Generator Framework for Text-to-SQL},
+   volume={38},
+   ISSN={2326-3865},
+   url={http://dx.doi.org/10.1109/TKDE.2026.3657851},
+   DOI={10.1109/tkde.2026.3657851},
+   number={4},
+   journal={IEEE Transactions on Knowledge and Data Engineering},
+   publisher={Institute of Electrical and Electronics Engineers (IEEE)},
+   author={Liu, Yifu and Zhu, Yin and Gao, Yingqi and Luo, Zhiling and Li, Xiaoxia and Shi, Xiaorong and Hong, Yuntao and Gao, Jinyang and Li, Yu and Ding, Bolin and Zhou, Jingren},
+   year={2026},
+   month=Apr, 
+   pages={2474-2487},
+   abstract={To leverage the advantages of LLM in addressing challenges in the Text-to-SQL task, we present XiYan-SQL, an innovative framework effectively generating and utilizing multiple SQL candidates. It consists of three components: 1) a Schema Filter module filtering and obtaining multiple relevant schemas; 2) a multi-generator ensemble approach generating multiple highquality and diverse SQL queries; 3) a selection model with a candidate reorganization strategy implemented to obtain the optimal SQL query. Specifically, for the multi-generator ensemble, we employ a multi-task fine-tuning strategy to enhance the capabilities of SQL generation models for the intrinsic alignment between SQL and text, and construct multiple generation models with distinct generation styles by fine-tuning across different SQL formats. The experimental results and comprehensive analysis demonstrate the effectiveness and robustness of our framework. Overall, XiYan-SQL achieves a new SOTA performance of 75.63% on the notable BIRD benchmark, surpassing all previous methods. It also attains SOTA performance on the Spider test set with an accuracy of 89.65%.}
+}
+
+@comment{
+ category={Agentic LLM (multi-agent)},
+ cites={MAC-SQL},
+}
+@inproceedings{wang2026learning,
+  title={Learning to retrieve: Dual-level long-term memory for text-to-SQL agents},
+  author={Wang, Yibo and Kuang, Nikki Lijing and Philip, S Yu and Yao, Zhewei and He, Yuxiong},
+  booktitle={Proceedings of the 2026 Conference on Empirical Methods in Natural Language Processing},
+  pages={45174--45197},
+  url={https://aclanthology.org/2026.emnlp-main.1986.pdf},
+  year={2026}
+}
+
+@comment{
+ category={LLM-prompting / decomposition},
+ cites={MAC-SQL},
+}
+@article{choi26text,
+  title={Text-to-SQL in the Era of Large Language Models: A Survey of Reasoning-Centric and Efficiency-Centric Approaches},
+  author={Choi, Gunhee and Wee, Dayeon and Choi, Jongmoo},
+  journal={Electronics},
+  volume={15},
+  number={21},
+  pages={5003},
+  url={https://www.mdpi.com/2079-9292/15/21/5003},
+  year={2026},
+  publisher={MDPI}
+}
+
+@comment{
+ category={LLM-prompting / decomposition},
+ cites={MAC-SQL},
+}
+@inproceedings{liao2026learnat,
+  title={Learnat: Learning nl2sql with ast-guided task decomposition for large language models},
+  author={Liao, Weibin and Gao, Xin and Jia, Tianyu and Qiu, Rihong and Zhu, Yifan and Lin, Yang and Ma, Xinyu and Zhao, Junfeng and Wang, Yasha},
+  booktitle={International Conference on Learning Representations},
+  volume={2026},
+  pages={87420--87452},
+  year={2026},
+  url={https://proceedings.iclr.cc/paper_files/paper/2026/file/8c88392f8094ab4d2d72c6c2e152ef49-Paper-Conference.pdf}
+}
+
+@comment{
+ category={LLM-prompting / decomposition},
+ cites={MAC-SQL},
+}
+@inproceedings{hong26errorllm,
+author = {Hong, Zijin and Chen, Hao and Yuan, Zheng and Zhang, Qinggang and Zhuang, Luyao and Liao, Qing and Huang, Feiran and Song, Yangqiu and Huang, Xiao},
+title = {ErrorLLM: Modeling SQL Errors for Text-to-SQL Refinement},
+year = {2026},
+isbn = {9798400722592},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3770855.3818164},
+doi = {10.1145/3770855.3818164},
+abstract = {Despite the remarkable performance of large language models (LLMs) in text-to-SQL, correctly producing SQL queries remains challenging during initial generation. The SQL refinement task is subsequently introduced to correct syntactic and semantic errors. However, existing paradigms face two major limitations: (i) self-debugging becomes increasingly ineffective as modern LLMs rarely produce explicit execution errors; (ii) self-correction exhibits low detection precision due to the lack of explicit error modeling grounded in the question and schema, and suffers from severe hallucination that frequently corrupts correct SQLs. In this paper, we propose ErrorLLM, a framework that explicitly models text-to-SQL Errors within a dedicated LLM for text-to-SQL refinement. Specifically, we represent question and schema as structural features, employ static detection to identify execution failures and surface mismatches, and extend ErrorLLM's semantic space with dedicated error tokens that capture categorized implicit semantic error types. Through a well-designed training strategy, we explicitly model these errors with structural representations, enabling the LLM to detect complex implicit errors by predicting dedicated error tokens. Guided by the detected errors, we perform error-guided refinement on the SQL structure by prompting LLMs. Extensive experiments demonstrate that ErrorLLM achieves the most significant improvements over backbone initial generation. Further analysis reveals that detection quality directly determines refinement effectiveness, which ErrorLLM achieves through a high detection F1 score. The corresponding code of ErrorLLM is released for further research.},
+booktitle = {Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining V.2},
+pages = {1710-1721},
+numpages = {12},
+keywords = {text-to-sql, large language model, database},
+location = {Jeju Island, Republic of Korea},
+series = {KDD '26}
+}
+
+@comment{
+ category={Agentic LLM (multi-agent)},
+ cites={MAC-SQL},
+}
+@inproceedings{cao26apex,
+author = {Cao, Bowen and Liao, Weibin and Sun, Yushi and Fang, Dong and Li, Haitao and Lam, Wai},
+title = {APEX-SQL: Talking to the data via Agentic Exploration for Text-to-SQL},
+year = {2026},
+isbn = {9798400722592},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3770855.3818075},
+doi = {10.1145/3770855.3818075},
+abstract = {Text-to-SQL systems powered by Large Language Models have excelled on academic benchmarks but struggle in complex enterprise environments. The primary limitation lies in their reliance on static schema representations, which fails to resolve semantic ambiguity and scale effectively to large, complex databases. To address this, we propose APEX-SQL, an Agentic Text-to-SQL Framework that shifts the paradigm from passive translation to agentic exploration. Our framework employs a hypothesis-verification loop to ground model reasoning in real data. In the schema linking phase, we use logical planning to verbalize hypotheses, dual-pathway pruning to reduce the search space, and parallel data profiling to validate column roles against real data, followed by global synthesis to ensure topological connectivity. For SQL generation, we introduce a deterministic mechanism to retrieve exploration directives, allowing the agent to effectively explore data distributions, refine hypotheses, and generate semantically accurate SQLs. Experiments on BIRD (70.65\% execution accuracy) and Spider 2.0-Snow (53.03\% execution accuracy) demonstrate that APEX-SQL outperforms competitive baselines. Further analysis reveals that agentic exploration acts as a performance multiplier, unlocking the latent reasoning potential of foundation models in enterprise settings. Ablation studies confirm the critical contributions of each component in ensuring robust and accurate data analysis. Our code is released at https://github.com/Tencent/APEX-SQL-Project.},
+booktitle = {Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining V.2},
+pages = {234-244},
+numpages = {11},
+keywords = {agentic text-to-sql, schema linking, sql generation},
+location = {Jeju Island, Republic of Korea},
+series = {KDD '26}
+}
+
+
+@comment{
+ category={LLM-prompting / decomposition},
+ cites={CHESS},
+}
+@article{liu26a,
+author="Liu, Mengyi
+and Wang, Xieyang
+and Xu, Jianqiu
+and Yi, Weijia
+and Wolfson, Ouri",
+title="A systematic review of natural language interfaces for databases",
+journal="Frontiers of Computer Science",
+year="2026",
+month="Mar",
+day="07",
+volume="20",
+number="11",
+pages="2011623",
+abstract="With the growing prevalence of data-driven decision-making, Text-to-SQL has emerged as a promising solution to lower the barrier to data access by translating natural language queries into executable SQL statements, thereby enhancing user interaction with databases. Despite notable progress driven by deep learning and large language models, significant challenges persist in handling complex queries. This paper presents a comprehensive review of the Text-to-SQL task, structured around two core stages: natural language understanding and natural language translation. Methods are categorized along the technical evolution trajectory into four types: rule-based, machine learning-based, pre-trained language model-based, and large language model-based approaches. Unlike previous surveys, which focus on specific techniques or partial aspects of Text-to-SQL, our work offers a two-stage analytical framework, highlights the impact of large models, and provides a comparative analysis of limitations and trade-offs. Through detailed examination of accuracy, generalization, expressiveness, and computational cost, this survey presents insights into the advantages and disadvantages of each paradigm. Furthermore, the paper summarizes key benchmark datasets and evaluation metrics, and discusses directions to improve the robustness, security, and effectiveness of the existing Text-to-SQL systems.",
+issn="2095-2236",
+doi="10.1007/s11704-025-50592-w",
+url="https://doi.org/10.1007/s11704-025-50592-w"
+}
+
+@comment{
+ category={LLM-prompting / decomposition},
+ cites={CHESS},
+}
+@inproceedings{royer26closing,
+    title = "Closing the Cross-Dialect Gap: Query Plans as a Portable Interface in Text-to-{SQL}",
+    author = "Royer, Corentin  and
+      Oester, Robin  and
+      Perlitz, Yotam  and
+      Metz, Yannick  and
+      Giovannini, Andrea  and
+      El-Assady, Mennatallah",
+    editor = "Lee, Hung-Yi  and
+      Dev, Sunipa  and
+      Li, Jessy  and
+      Elliott, Desmond",
+    booktitle = "Findings of the {A}ssociation for {C}omputational {L}inguistics: {EMNLP} 2026",
+    month = oct,
+    year = "2026",
+    address = "Budapest, Hungary",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2026.findings-emnlp.2422/",
+    doi = "10.18653/2026.findings-emnlp.2422",
+    pages = "52002--52021",
+    ISBN = "979-8-89176-462-0",
+    abstract = "Text-to-SQL systems are typically trained and evaluated on a single dialect (SQLite), yet production deployments span PostgreSQL, MySQL, ClickHouse, and beyond. We show that this single-dialect assumption leads to a substantial drop in lower-bound dialect accuracy for every model we tested. The drop persists across scale, architecture, and even purpose-built text-to-SQL systems. We argue that the fix is to change the generation target: instead of asking an LLM to emit dialect-specific SQL, we have it emit a dialect-agnostic relational algebra query plan, which a deterministic compiler then renders into SQL for any supported backend. Across thirteen models from 3B to frontier scale, this restores cross-dialect portability nearly uniformly, at a small cost in peak accuracy on the model{'}s home dialect for capable prompted models and none once fine-tuned on plans; under matched fine-tuning, plan supervision yields a stronger model than SQL supervision. We also introduce DF-Match, a question-aware result-set comparator needed to evaluate fairly across dialects, where existing metrics confound semantic errors with benign cross-dialect variation. More broadly, the result is a reminder that a generation target chosen for execution is not necessarily the one that maximizes generation quality."
+}
+
+@comment{
+ category={LLM-prompting / decomposition},
+ cites={CHESS, ErrorLLM},
+}
+@inproceedings{yuan26knapsack,
+  author={Yuan, Zheng and Chen, Hao and Hong, Zijin and Zhang, Qinggang and Huang, Feiran and Li, Qing and Huang, Xiao},
+  booktitle={2026 IEEE 42nd International Conference on Data Engineering (ICDE)}, 
+  title={Knapsack Optimization-Based Schema Linking for LLM-Based Text-to-SQL Generation}, 
+  year={2026},
+  volume={},
+  number={},
+  pages={531-544},
+  keywords={Joining processes;Modeling;Optimization;Redundancy;Structured Query Language;Termination of employment;Printing;Codes;Birds;Large language models;text-to-SQL;database;large language models;natural language understanding},
+  url={https://ieeexplore.ieee.org/abstract/document/11629376},
+  doi={10.1109/ICDE65706.2026.00046}
+}
+
+@comment{
+ category={Agentic LLM (multi-agent)},
+ cites={CHESS},
+}
+@misc{li26beyond,
+      title={Beyond Correctness: Resolving Underspecification in Agentic Text-to-SQL}, 
+      author={Wen-Zhi Li and Yue Gong and Konstantinos Kanellis and Balakrishnan Murali Narayanaswamy},
+      year={2026},
+      eprint={2610.02739},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2610.02739}, 
+}
+
+@comment{
+ category={Benchmarks \& evaluation},
+ cites={CHESS, BIRD},
+}
+@inproceedings{klopfenstein2026spotit,
+ author = {Klopfenstein, Rocky and He, Yang and Tremante, Andrew and Wang, Yuepeng and Narodytska, Nina and Wu, Haoze},
+ booktitle = {International Conference on Learning Representations},
+ editor = {C. Vondrick and B. Hariharan and C. Raffel and L. Pinto and D. Yang and A. Faust},
+ pages = {69012--69048},
+ title = {SpotIt: Evaluating Text-to-SQL Evaluation with Formal Verification},
+ url = {https://proceedings.iclr.cc/paper_files/paper/2026/file/70e692da44c19710386648694e2b899b-Paper-Conference.pdf},
+ volume = {2026},
+ year = {2026}
 }
