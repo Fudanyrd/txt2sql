@@ -1,0 +1,663 @@
+---
+marp: true
+paginate: true
+theme: default
+style: |
+  section {
+    background-color: #f7fbff;
+    color: #0b2545;
+    font-size: 21px;
+    padding: 44px 52px;
+  }
+  section::after {
+    color: #5b7c99;
+    font-size: 14px;
+  }
+  section h1 {
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px 30px;
+    color: white;
+    background-color: #3333ab;
+    border-radius: 8px;
+  }
+  section h2 {
+    font-size: 33px;
+    font-weight: bold;
+    text-align: left;
+    margin: 0 0 20px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #0d3b66, #1565c0);
+    color: #ffffff;
+  }
+  .hero {
+    text-align: center;
+    padding-top: 90px;
+  }
+  .kicker {
+    color: #0f766e;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .title {
+    margin: 18px auto 12px;
+    padding: 18px 24px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0d3b66, #1565c0 60%, #0891b2);
+    color: #ffffff;
+    font-size: 46px;
+    font-weight: bold;
+  }
+  .subtitle {
+    color: #335c7d;
+    font-size: 23px;
+    line-height: 1.35;
+  }
+  .author {
+    margin-top: 26px;
+    color: #0d3b66;
+    font-size: 27px;
+  }
+  .author span {
+    display: block;
+    margin-top: 6px;
+    color: #5b7c99;
+    font-size: 16px;
+    font-weight: normal;
+  }
+  .definition {
+    background-color: #e6f0fa;
+    border-left: 6px solid #1565c0;
+    border-radius: 8px;
+    padding: 14px 20px;
+    font-size: 21px;
+    line-height: 1.35;
+  }
+  .definition strong {
+    color: #0d3b66;
+  }
+  .example {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 14px;
+    align-items: stretch;
+    margin-top: 16px;
+  }
+  .panel {
+    background-color: #ffffff;
+    border: 1px solid #cfe0f0;
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 6px rgba(13, 59, 102, 0.08);
+  }
+  .panel .label {
+    display: block;
+    margin-bottom: 7px;
+    color: #5b7c99;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .panel p {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  .panel code {
+    color: #0d3b66;
+    font-size: 17px;
+  }
+  .nl {
+    background-color: #e8f5f1;
+    border-color: #a7d8c9;
+  }
+  .sql {
+    background-color: #e8f1fb;
+    border-color: #a9c8ea;
+  }
+  .arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1565c0;
+    font-size: 34px;
+    font-weight: bold;
+  }
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .step {
+    background-color: #ffffff;
+    border-top: 5px solid #0891b2;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 16px;
+    line-height: 1.35;
+    box-shadow: 0 2px 6px rgba(13, 59, 102, 0.07);
+  }
+  .step b {
+    display: block;
+    margin-bottom: 3px;
+    color: #0d3b66;
+    font-size: 18px;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .card {
+    background-color: #ffffff;
+    border: 1px solid #cfe0f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 6px rgba(13, 59, 102, 0.08);
+  }
+  .card h3 {
+    margin: 0 0 7px;
+    color: #0d3b66;
+    font-size: 19px;
+  }
+  .card p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.38;
+  }
+  .badge {
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background-color: #1565c0;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .badge.teal {
+    background-color: #0f766e;
+  }
+  .badge.green {
+    background-color: #2e7d32;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    padding: 5px 12px;
+    border: 1px solid #a9c8ea;
+    border-radius: 999px;
+    background-color: #e6f0fa;
+    color: #0d3b66;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .evolution {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .era {
+    padding: 8px 12px;
+    border-left: 4px solid #0f766e;
+    border-radius: 6px;
+    background-color: #eef7f4;
+    color: #335c7d;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+  .era b {
+    display: block;
+    color: #0d3b66;
+    font-size: 15px;
+  }
+  .takeaway {
+    margin-top: 14px;
+    padding: 11px 18px;
+    border-radius: 8px;
+    background-color: #0d3b66;
+    color: #e8f1fb;
+    font-size: 17px;
+    line-height: 1.35;
+  }
+  .takeaway strong {
+    color: #ffffff;
+  }
+  .sources {
+    margin-top: 16px;
+    padding-top: 7px;
+    border-top: 1px solid #cfe0f0;
+    color: #5b7c99;
+    font-size: 12.5px;
+    line-height: 1.35;
+  }
+  .sources b {
+    color: #335c7d;
+  }
+  section table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+    font-size: 16.5px;
+  }
+  section thead th {
+    padding: 8px 10px;
+    background-color: #0d3b66;
+    color: #ffffff;
+    text-align: left;
+  }
+  section tbody td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #cfe0f0;
+    vertical-align: top;
+    line-height: 1.32;
+  }
+  section tbody tr:nth-child(even) {
+    background-color: #eef4fb;
+  }
+  section tbody tr:last-child td {
+    border-top: 2px solid #0d3b66;
+    font-weight: 700;
+  }
+  .trend {
+    margin-top: 8px;
+  }
+  .plot {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: end;
+    height: 218px;
+    padding: 0 8px;
+    border-bottom: 2px solid #8fb3d1;
+  }
+  .bcol {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  }
+  .bcount {
+    margin-bottom: 3px;
+    color: #0d3b66;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .stack {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 56px;
+    overflow: hidden;
+    border-radius: 4px 4px 0 0;
+  }
+  .seg {
+    width: 100%;
+  }
+  .seg.bench { background-color: #1565c0; }
+  .seg.schema { background-color: #2e7d32; }
+  .seg.llm { background-color: #ef6c00; }
+  .seg.agentic { background-color: #00838f; }
+  .seg.rank { background-color: #6a1b9a; }
+  .seg.slm { background-color: #c62828; }
+  .seg.ind { background-color: #546e7a; }
+  .years {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    padding: 4px 8px 0;
+    color: #335c7d;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+  }
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 16px;
+    margin-top: 9px;
+    color: #335c7d;
+    font-size: 12.5px;
+  }
+  .chart-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+  .findings {
+    margin: 11px 0 0;
+    padding-left: 20px;
+    font-size: 16.5px;
+    line-height: 1.38;
+  }
+  .findings li {
+    margin-bottom: 3px;
+  }
+---
+
+<div class="hero">
+
+<div class="kicker">Natural Language × Relational Data</div>
+
+<!-- FIXME: -->
+<div class="title">
+Research Proposal for a Text-to-SQL Method
+</div>
+
+<div class="author">
+Anonymous
+</div>
+
+</div>
+
+---
+
+<h1>Introduction to Text-to-SQL</h1>
+
+---
+
+## What is Text-to-SQL?
+
+<div class="definition">
+<strong>Text-to-SQL</strong> (also <strong>NL-to-SQL</strong>) translates a natural-language question, together with a database schema, into an <strong>executable SQL query</strong>. It sits at the core of natural-language interfaces for databases and lowers the barrier to structured data access.
+</div>
+
+<div class="example">
+
+<div class="panel nl">
+<span class="label">Natural language</span>
+<p>“What is the average salary of employees in the sales department?”</p>
+</div>
+
+<div class="arrow">→</div>
+
+<div class="panel sql">
+<span class="label">Executable SQL</span>
+<p><code>SELECT AVG(salary)<br />FROM employees<br />WHERE department = 'sales';</code></p>
+</div>
+
+</div>
+
+<div class="pipeline">
+  <div class="step"><b>1 · Understand</b>Extract tables, columns, predicates, aggregations, and sort orders from the question.</div>
+  <div class="step"><b>2 · Link</b>Ground question phrases in schema elements, database values, and join paths.</div>
+  <div class="step"><b>3 · Translate</b>Build SQL that satisfies syntax and logical constraints.</div>
+  <div class="step"><b>4 · Verify</b>Check execution and confirm the result matches user intent.</div>
+</div>
+
+<div class="takeaway">
+<strong>Not just a translation task.</strong> Modern Text-to-SQL is an execution-aware semantic parsing and program-synthesis problem.
+</div>
+
+<div class="sources">
+<b>Sources:</b> Liu et al., “A systematic review of natural language interfaces for databases,” Frontiers of Computer Science, 2026 (definition, two-stage NLU/NLT view, worked example). Choi et al., “Text-to-SQL in the Era of Large Language Models,” Electronics, 2026 (execution-aware parsing, grounding, verification).
+</div>
+
+---
+
+## Why It Matters for Practitioners
+
+<div class="card-grid">
+
+<div class="card">
+<span class="badge teal">Access</span>
+<h3>Lower the barrier</h3>
+<p>Non-experts retrieve structured information in natural language instead of learning schemas, joins, and SQL syntax.</p>
+</div>
+
+<div class="card">
+<span class="badge">Productivity</span>
+<h3>Faster insight</h3>
+<p>Analysts and business users can move from question to query to answer without a hand-written query for every need.</p>
+</div>
+
+<div class="card">
+<span class="badge green">Reach</span>
+<h3>Embedded everywhere</h3>
+<p>Powers business intelligence, structured web search, customer-support querying, intelligent QA, and low-code tools.</p>
+</div>
+
+</div>
+
+<div class="chips">
+  <div class="chip">Self-service analytics</div>
+  <div class="chip">Enterprise data services</div>
+  <div class="chip">Low-code development</div>
+  <div class="chip">Conversational assistants</div>
+</div>
+
+<div class="evolution">
+  <div class="era"><b>Rule-based</b>Precise but brittle; high maintenance.</div>
+  <div class="era"><b>Neural / PLM</b>Learned parsing; needs task-specific data.</div>
+  <div class="era"><b>LLM prompting</b>Few-shot and zero-shot SQL synthesis.</div>
+  <div class="era"><b>Agentic systems</b>Retrieval, verification, and execution feedback.</div>
+</div>
+
+<div class="takeaway">
+<strong>Why now:</strong> LLMs make zero-shot and few-shot SQL synthesis feasible, shifting research from hand-built parsers to system-level pipelines.
+</div>
+
+<div class="sources">
+<b>Sources:</b> Liu et al. (2026) — barrier reduction, application areas, and the rule-based → ML → PLM → LLM evolution. Choi et al. (2026) — the shift toward LLM-based and agentic systems, and deployment concerns beyond accuracy.
+</div>
+
+---
+
+## Challenges That Remain
+
+<div class="card-grid">
+
+<div class="card">
+<span class="badge">Grounding</span>
+<h3>Connect language to schema</h3>
+<p>Systems must identify relevant tables and columns, ground phrases in database values, and infer valid join paths before writing SQL.</p>
+</div>
+
+<div class="card">
+<span class="badge">Scale</span>
+<h3>Large schemas</h3>
+<p>Real databases can be too large for a prompt; the full schema adds context length, inference cost, and irrelevant information.</p>
+</div>
+
+<div class="card">
+<span class="badge">Correctness</span>
+<h3>Executable ≠ correct</h3>
+<p>A query may run successfully yet return a result that differs from what the user intended, so execution-guided validation is needed.</p>
+</div>
+
+<div class="card">
+<span class="badge teal">Efficiency</span>
+<h3>Cost and stability</h3>
+<p>LLM-based methods face output instability, limited semantic control, and high inference cost, with accuracy–cost trade-offs.</p>
+</div>
+
+<div class="card">
+<span class="badge teal">Ambiguity</span>
+<h3>Language vs. SQL</h3>
+<p>Natural language is ambiguous and variable, while SQL demands precise semantic alignment and strict logical constraints.</p>
+</div>
+
+<div class="card">
+<span class="badge green">Security</span>
+<h3>Safety and privacy</h3>
+<p>Valid queries can expose restricted data, modify data, or overload the database; prompt injection and jailbreaking add risk.</p>
+</div>
+
+</div>
+
+<div class="takeaway">
+<strong>The hard part is reliability, not syntax.</strong> Practical systems must jointly optimize grounding, semantic correctness, cost, and safety.
+</div>
+
+<div class="sources">
+<b>Sources:</b> Choi et al. (2026) — schema/value grounding, large-schema context costs, semantic correctness, and security/safety risks. Liu et al. (2026) — ambiguity and variability of natural language, strict SQL constraints, output instability, and inference cost.
+</div>
+
+---
+
+<h1>Literature Review</h1>
+
+---
+
+## Methodology of the Literature Review
+
+<div class="card-grid">
+
+<div class="card">
+<span class="badge">1 · Seed</span>
+<h3>Start from 6 seed papers</h3>
+<p>Course-provided seeds: Purple (2024), MetaSQL (2024), GAR (2023), Combining SLM+LLM (2024), CATSQL (2023), Athena++ (2020).</p>
+</div>
+
+<div class="card">
+<span class="badge teal">2 · Snowball</span>
+<h3>Backward & forward search</h3>
+<p>Walk each seed's references (backward) and the papers that cite it (forward) to grow the corpus.</p>
+</div>
+
+<div class="card">
+<span class="badge green">3 · Classify</span>
+<h3>Group by research front</h3>
+<p>Screen the expanded set and assign every paper to one of seven research fronts.</p>
+</div>
+
+</div>
+
+<div class="chips">
+  <div class="chip">6 seed papers</div>
+  <div class="chip">+ 27 via snowballing</div>
+  <div class="chip">= 33 papers</div>
+  <div class="chip">7 research fronts</div>
+</div>
+
+<div class="takeaway">
+<strong>Result:</strong> snowballing turned 6 seeds into a 33-paper, 7-front map — 21 of the 27 added papers (78%) are from 2024 or later, keeping both pre-LLM anchors and the current LLM frontier.
+</div>
+
+<div class="sources">
+<b>Sources:</b> <code>src/main.tex</code> — seed set, backward/forward snowballing, the 33-paper composition summary, and the research-front classification.
+</div>
+
+---
+
+## Comparison of Different Schemes
+
+Schemes and research fronts form a one-to-one mapping.
+
+| Scheme | Core idea | # Publications |
+|:--|:--|:--:|
+| Benchmarks & evaluation | Curate datasets and execution-based metrics that probe realistic Text-to-SQL understanding. | 4 |
+| Schema linking & neural parsing | Map question mentions to tables and columns inside neural encoder–decoder SQL parsers. | 6 |
+| LLM prompting / decomposition | Break questions into sub-tasks and guide LLMs with staged prompts and in-context examples. | 10 |
+| Agentic LLM (multi-agent) | Coordinate specialized LLM agents for schema retrieval, query generation, and iterative repair. | 5 |
+| Generate-then-rank & self-correction | Sample multiple candidate SQL queries, then rank, select, or repair them using execution feedback. | 4 |
+| SLM–LLM collaboration & open-source | Pair small and large models, or release open models, to trade accuracy against inference cost. | 3 |
+| Industrial NLIDB systems | Ship end-to-end natural-language database interfaces as production systems. | 1 |
+| **Total** | | **33** |
+
+---
+
+## Trend Analysis
+
+<div class="trend">
+  <div class="plot">
+    <div class="bcol">
+      <div class="bcount">1</div>
+      <div class="stack">
+        <div class="seg bench" style="height:14px"></div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcount">2</div>
+      <div class="stack">
+        <div class="seg schema" style="height:14px"></div>
+        <div class="seg ind" style="height:14px"></div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcount">1</div>
+      <div class="stack">
+        <div class="seg schema" style="height:14px"></div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcount">5</div>
+      <div class="stack">
+        <div class="seg bench" style="height:14px"></div>
+        <div class="seg schema" style="height:14px"></div>
+        <div class="seg llm" style="height:14px"></div>
+        <div class="seg rank" style="height:14px"></div>
+        <div class="seg slm" style="height:14px"></div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcount">13</div>
+      <div class="stack">
+        <div class="seg bench" style="height:14px"></div>
+        <div class="seg schema" style="height:42px"></div>
+        <div class="seg llm" style="height:42px"></div>
+        <div class="seg agentic" style="height:28px"></div>
+        <div class="seg rank" style="height:28px"></div>
+        <div class="seg slm" style="height:28px"></div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcount">11</div>
+      <div class="stack">
+        <div class="seg bench" style="height:14px"></div>
+        <div class="seg llm" style="height:84px"></div>
+        <div class="seg agentic" style="height:42px"></div>
+        <div class="seg rank" style="height:14px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="years">
+    <span>2018</span><span>2020</span><span>2021</span><span>2023</span><span>2024</span><span>2026</span>
+  </div>
+  <div class="chart-legend">
+    <span><i class="dot" style="background:#1565c0"></i>Benchmarks</span>
+    <span><i class="dot" style="background:#2e7d32"></i>Schema linking</span>
+    <span><i class="dot" style="background:#ef6c00"></i>LLM prompting</span>
+    <span><i class="dot" style="background:#00838f"></i>Agentic</span>
+    <span><i class="dot" style="background:#6a1b9a"></i>Generate-then-rank</span>
+    <span><i class="dot" style="background:#c62828"></i>SLM–LLM</span>
+    <span><i class="dot" style="background:#546e7a"></i>Industrial</span>
+  </div>
+</div>
+
+<ul class="findings">
+  <li><strong>2024 is the peak (13 papers):</strong> schema linking, LLM prompting, agentic pipelines, ranking, and SLM–LLM work all appear together.</li>
+  <li><strong>Early work (2018–2021, 4 papers)</strong> is dominated by benchmarks and pre-LLM neural parsing, with one industrial system.</li>
+  <li><strong>By 2026 the frontier shifts</strong> to LLM prompting/decomposition (6) and agentic multi-agent systems (3), while surveys consolidate the field.</li>
+</ul>
+
+<div class="sources">
+<b>Sources:</b> counts derived from the 33-paper table in <code>src/main.tex</code>, grouped by publication year and research front.
+</div>
+
+---
+
+## Schema Linking \& Neural Parsing
+
+<div class="sources">
+RAT-SQL (2020, ACL); PICARD (2021, EMNLP); RESDSQL (2023, AAAI);
+    E-SQL (2024, arXiv:2409.16751); RSL-SQL (2024, arXiv:2411.00073);
+    Solid-SQL (2024, arXiv:2412.12522)
+</div>

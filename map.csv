@@ -1,0 +1,34 @@
+research front,bibtex entry ID,paper location
+Benchmarks & evaluation,yu_spider_2018,papers/yu18spider.pdf
+Benchmarks & evaluation,li2023bird,papers/li23can.pdf
+Benchmarks & evaluation,lei_spider_2024,papers/lei24spider.pdf
+Benchmarks & evaluation,klopfenstein2026spotit,papers/klopfenstein26spotit.pdf
+Schema linking & neural parsing,wang_rat-sql_2019,papers/wang19ratsql.pdf
+Schema linking & neural parsing,scholak_picard_2021,papers/scholak21picard.pdf
+Schema linking & neural parsing,li_resdsql_2023,papers/li23resdsql.pdf
+Schema linking & neural parsing,caferoglu_e-sql_2024,papers/caferolu24esql.pdf
+Schema linking & neural parsing,cao_rsl-sql_2024,papers/cao24rslsql.pdf
+Schema linking & neural parsing,liu_solid-sql_2024,papers/liu24solidsql.pdf
+LLM prompting / decomposition,pourreza2023dinsql,papers/pourreza23dinsql.pdf
+LLM prompting / decomposition,pourreza_dts-sql_2024,papers/pourreza24dtssql.pdf
+LLM prompting / decomposition,lee2024mcssql,papers/lee24mcssql.pdf
+LLM prompting / decomposition,shen_select-sql_2024,papers/shen24selectsql.pdf
+LLM prompting / decomposition,liao2026learnat,papers/liao26learnat.pdf
+LLM prompting / decomposition,hong26errorllm,papers/hong26eerrorllm.pdf
+LLM prompting / decomposition,choi26text,papers/choi26text.pdf
+LLM prompting / decomposition,liu26a,papers/liu26a.pdf
+LLM prompting / decomposition,royer26closing,papers/royer26closing.pdf
+LLM prompting / decomposition,yuan26knapsack,papers/yuan26knapsack.pdf
+Agentic LLM (multi-agent),wang2023macsql,papers/wang24macsql.pdf
+Agentic LLM (multi-agent),talaei2024chess,papers/talaei24chess.pdf
+Agentic LLM (multi-agent),cao26apex,papers/cao26apex.pdf
+Agentic LLM (multi-agent),wang2026learning,papers/wang26learning.pdf
+Agentic LLM (multi-agent),li26beyond,papers/li26beyond.pdf
+Generate-then-rank & self-correction,fan_gar_2023,papers/fan23gar.pdf
+Generate-then-rank & self-correction,fan_metasql_2024,papers/fan24metasql.pdf
+Generate-then-rank & self-correction,ren_purple_2024,papers/ren24purple.pdf
+Generate-then-rank & self-correction,Liu_2026,papers/liu25xiyansql.pdf
+SLM-LLM collaboration & open-source,fu_catsql_2023,papers/fu23catsql.pdf
+SLM-LLM collaboration & open-source,fan_combining_2024,papers/fan24combining.pdf
+SLM-LLM collaboration & open-source,li_codes_2024,papers/li24codes.pdf
+Industrial NLIDB systems,sen_athena_2020,papers/sen20athena.pdf

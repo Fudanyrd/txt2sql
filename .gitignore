@@ -1,1 +1,7 @@
 *.pdf
+*.aux
+*.log
+*.out
+*.snm
+venv
+_extract
