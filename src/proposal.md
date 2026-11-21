@@ -730,3 +730,90 @@ Schemes and research fronts form a one-to-one mapping.
 <div class="sources">
 <b>Sources:</b> RAT-SQL (2020, ACL), Section 4.3 and Figure 1; RESDSQL (2023, AAAI), Sections 1 and 4; E-SQL (2024, arXiv:2409.16751), Sections 1 and 3.5. Companion results: RSL-SQL (2024) — bidirectional linking and the gain/loss analysis; Solid-SQL (2024) — robust schema-linking model with LLM-based data augmentation; PICARD (2021) — constrained decoding against invalid schema references.
 </div>
+
+---
+
+## Generate-then-Rank \& Self-Correction
+
+<div class="definition">
+<strong>Generate-then-rank</strong>: the model produces a <strong>set of candidate queries</strong>, then a ranker or selection model picks the best. <strong>Self-correction</strong> closes the loop by repairing the chosen query against the DB schema or execution result.
+</div>
+
+| | Mechanism | Consequence |
+|:--|:--|:--|
+| **Pro** | Sample many candidates instead of one auto-regressive output | Escapes sub-optimal "top-1" decoding; ranking can recover a globally-optimal query |
+| **Pro** | Rank on global NL↔SQL semantic similarity | Sidesteps the local, left-to-right context bias of sequential decoding |
+| **Pro** | Wrap existing backends with metadata + ranking | Model-agnostic; lifts Seq2seq and LLM baselines without retraining the generator |
+| **Pro** | Repair the winner against schema, dialect, execution | Fixes hallucinated columns, values, and operator misuse; stabilizes output |
+
+---
+
+## Generate-then-Rank \& Self-Correction (Cont.)
+
+| | Mechanism (Cont.) | Consequence (Cont.) |
+|:--|:--|:--|
+| **Risk** | N× generation plus ranking overhead | Multiplies inference calls, latency, and cost; forces an accuracy–budget trade-off |
+| **Risk** | Diversity ≠ correctness | More candidates can still all be wrong; self-consistency is not always the optimal selector |
+| **Risk** | Ranker is a second point of failure | A wrong rank can demote the one correct candidate produced upstream |
+| **Risk** | Generation is bounded by samples/metadata/demonstrations | Unseen components or operator compositions outside the covered set stay untranslatable |
+
+<div class="takeaway">
+<strong>Generate-then-rank trades compute for correctness—but only if both ends are strong.</strong> A diverse generator and an accurate ranker are each necessary: broad coverage fails without good ranking, and good ranking is wasted on narrow, near-duplicate candidates.
+</div>
+
+<div class="sources">
+<b>Sources:</b> MetaSQL (2024, ICDE) — auto-regressive decoding suffers from low output diversity and missing global context; metadata + two-stage ranking as a model-agnostic fix. XiYan-SQL (2026, TKDE) — increased candidate diversity alone does not guarantee correctness, and self-consistency does not always select the optimum. PURPLE (2024, ICDE) — execution match overestimates quality, hallucination repair, and the cost/accuracy trade-off. GAR (2023, ICDE) — translation is bounded by the coverage of sample queries; unseen components are not generated.
+</div>
+
+---
+
+## The Generate-then-Rank Pipeline
+
+<div class="definition">
+Across GAR, MetaSQL, PURPLE, and XiYan-SQL the workflow converges on the same four-stage pattern: <strong>control → generate → rank → repair</strong>. The papers differ mainly in <em>what</em> control signal is used and <em>how</em> candidates are ranked.
+</div>
+
+<div class="pipeline">
+  <div class="step"><b>1 · Control / Understand</b>Map the NL meaning to a control signal — query metadata (MetaSQL), a predicted SQL skeleton (PURPLE), or generalized sample queries (GAR).</div>
+  <div class="step"><b>2 · Generate candidates</b>Condition diverse decoders/generators on the control signal to emit many SQL candidates (metadata-conditioned, multi-generator, component-recomposed).</div>
+  <div class="step"><b>3 · Rank / Select</b>Score NL↔SQL similarity globally with learning-to-rank or a selection model, then pick the best candidate.</div>
+  <div class="step"><b>4 · Self-correct</b>Adapt the winner to the schema and DBMS dialect, and validate by execution; fix hallucinations and stabilize the output.</div>
+</div>
+
+<div class="example">
+  <div class="panel nl">
+    <span class="label">Candidates (diverse but uneven)</span>
+    <p><code>… WHERE language != 'English'</code><br /><code>… JOIN Country WHERE …</code><br /><code>… EXCEPT SELECT … WHERE language='English'</code></p>
+  </div>
+  <div class="arrow">→</div>
+  <div class="panel sql">
+    <span class="label">Ranked output (MetaSQL)</span>
+    <p><code>SELECT countrycode FROM CountryLanguage<br />EXCEPT SELECT countrycode FROM CountryLanguage<br />WHERE language='English';</code></p>
+  </div>
+</div>
+
+<div class="takeaway">
+<strong>The decisive step is ranking, not generation.</strong> For “countries that do not speak English”, beam-search top-1..5 are near-duplicate wrong answers; the ranker—using whole-query context—recovers the <code>EXCEPT</code> formulation the generator could produce but could not prioritize.
+</div>
+
+<div class="sources">
+<b>Sources:</b> GAR (2023, ICDE), Fig. 2 — generalize → SQL2NL → learning-to-rank. MetaSQL (2024, ICDE), Fig. 1 & Fig. 2 — the CountryLanguage <code>EXCEPT</code> example and semantic-decomposition → metadata-conditioned generation → two-stage ranking. PURPLE (2024, ICDE), Fig. 3 — schema pruning → skeleton prediction → demonstration selection → LLM inference → database adaption. XiYan-SQL (2026, TKDE), Fig. 1 — schema filter → multiple SQL generation → SQL selection.
+</div>
+
+---
+
+## Generate-then-Rank - Three Insights
+
+| Paper | Insight | Mechanism |
+|:--|:--|:--|
+| **MetaSQL** (2024) | Single auto-regressive SQL is trapped in local optima and near-duplicate beams; rank over the whole query instead. | Query metadata as an explicit control signal; metadata-conditioned candidate generation; two-stage retrieve-then-rerank pipeline. |
+| **PURPLE** (2024) | The bottleneck is logical operator composition, not NL understanding; retrieve demos that teach it, then repair the output. | Fine-tuned skeleton predictor → 4-level skeleton abstraction → demonstration retrieval; database-adaptation self-correction with execution-consistency. |
+| **XiYan-SQL** (2026) | Diversity alone is insufficient; combine an ensemble of expert generators with a learned selector. | Multi-path schema filtering + multi-task / multi-format fine-tuned generators + selection model with candidate reorganization. |
+
+<div class="takeaway">
+<strong>The front matures from rank to repair.</strong> GAR (2023) originated the idea—generalize sample SQL, render it as dialect text, and rank by semantic match—but stays within the covered query space. MetaSQL makes generation controllable, PURPLE adds skeleton-guided demonstration retrieval and self-correction, and XiYan-SQL scales to a fine-tuned multi-generator ensemble with a learned selector.
+</div>
+
+<div class="sources">
+<b>Sources:</b> MetaSQL (2024, ICDE), Sections 1 and 3 — metadata design, metadata-conditioned generation, two-stage ranking. PURPLE (2024, ICDE), Sections 1 and 3–4 — logical-operator-composition motivation, skeleton prediction, demonstration selection, database adaption. XiYan-SQL (2026, TKDE), Sections 1 and 3 — hybrid ensemble philosophy, multi-task/multi-format fine-tuning, candidate reorganization + selection model. GAR (2023, ICDE), Sections 1–3 — compositional generalization, SQL2NL dialect expressions, learning-to-rank.
+</div>
