@@ -733,6 +733,84 @@ Schemes and research fronts form a one-to-one mapping.
 
 ---
 
+## LLM Prompting \& Decomposition
+
+<div class="definition">
+<strong>LLM prompting / decomposition</strong> uses <strong>staged chain of prompts</strong>: ground the question in the schema, <strong>break the task into sub-tasks</strong>, generate candidate queries, then correct/select the best.
+</div>
+
+| | Mechanism | Consequence |
+|:--|:--|:--|
+| **Pro** | Decompose generation into linking, classification, generation, correction | Splits a hard declarative task into sub-problems the LLM solves more reliably (DIN-SQL: ~10% gain) |
+| **Pro** | Few-shot prompting instead of fine-tuning | No task-specific data or heavy compute; decomposition also lifts small open models (DTS-SQL, LearNAT) |
+| **Pro** | Multi-prompt sampling + self-correction / error modeling | Prompt sensitivity becomes diversity; selection and repair recover the best query (MCS-SQL, SelECT-SQL, ErrorLLM) |
+| **Risk** | LLMs are sensitive to prompt wording and order | The same question yields different SQL; accuracy is brittle across prompts |
+| **Risk** | Decomposing declarative SQL is ill-defined | Sub-task boundaries are unclear; an intermediate error propagates to the final query |
+| **Risk** | Multi-round prompts cost tokens/latency; self-correction can hallucinate | Gains trade against inference budget; low detection precision can corrupt a correct SQL |
+
+<div class="takeaway">
+<strong>Decomposition pays off only if the split is right and the loop is closed.</strong> Otherwise prompt noise, propagation of intermediate errors, and self-correction hallucination erode the accuracy gains.
+</div>
+
+<div class="sources">
+<b>Sources:</b> DIN-SQL (2023) — prompting avoids training data and fine-tuning; sub-task decomposition gains ~10%. DTS-SQL (2024) and LearNAT (2026) — privacy/cost of proprietary models and test-time scaling cost. MCS-SQL (2024) — prompt sensitivity exploited as diversity. SelECT-SQL (2024) — CoT + self-correction + ensemble and its token cost. ErrorLLM (2026) — self-debugging fails and self-correction hallucinates. Yuan et al. / KaSLA (2026) — missing or redundant schema elements propagate to SQL.
+</div>
+
+---
+
+## The Decomposed Prompting Pipeline
+
+<div class="definition">
+The workflow converges on the same four stages: <strong>link → decompose → generate → correct/select</strong>. The papers differ in <em>task decomposition</em> and <em>aggregating/repairing candidates</em>.
+</div>
+
+<div class="pipeline">
+  <div class="step"><b>1 · Schema link</b>Ground the question in relevant tables and columns.</div><!-- —via shuffled multi-prompts (MCS-SQL) or knapsack-optimal linking (KaSLA) -->
+  <div class="step"><b>2 · Classify & decompose</b>Label difficulty and split into sub-tasks: easy/non-nested/nested, CoT, or AST-guided.</div><!-- (DIN-SQL) (SelECT-SQL) (LearNAT)-->
+  <div class="step"><b>3 · Generate candidates</b>Emit SQL from class-specific prompts, producing candidate queries.</div>
+  <div class="step"><b>4 · Correct & select</b>Self-correct, then filter and choose.</div>
+</div>
+
+<div class="example">
+  <div class="panel nl">
+    <span class="label">Decomposed sub-tasks</span>
+    <p><code>1</code> link <code>employees.salary</code>, self-join on <code>manager</code><br /><code>2</code> classify: non-nested (join, no subquery)<br /><code>3</code> generate join + salary comparison<br /><code>4</code> correct join condition & predicate</p>
+  </div>
+  <div class="arrow">→</div>
+  <div class="panel sql">
+    <span class="label">Final SQL</span>
+    <p><code>SELECT e.name FROM employees e<br />JOIN employees m ON e.manager_id = m.id<br />WHERE e.salary > m.salary;</code></p>
+  </div>
+</div>
+
+<div class="takeaway">
+<strong>The decisive choices are the split and the aggregator.</strong> Decomposition alone helps, but the state-of-the-art comes from combining a task-aware split with candidate selection or error-driven repair.
+</div>
+
+<div class="sources">
+<b>Sources:</b> DIN-SQL (2023, Fig. 2) — schema linking → classification & decomposition → class-specific generation → self-correction. MCS-SQL (2024, Fig. 1) — schema linking → multiple generation → filtering → multiple-choice selection. SelECT-SQL (2024) — SS/MS CoT, self-correction, and ensemble. LearNAT (2026, Fig. 1) — AST-guided verifiable decomposition. ErrorLLM (2026) — static detection, error tokens, error-guided refinement. KaSLA (2026) — hierarchical table-then-column knapsack linking.
+</div>
+
+---
+
+## LLM Prompting - Three Insights
+
+| Paper | Insight | Mechanism |
+|:--|:--|:--|
+| **DIN-SQL** (2023) | Break the declarative SQL task into sub-problems and feed each sub-solution forward. | Four prompting modules—schema linking, difficulty classification & decomposition, class-specific generation, self-correction—all in-context, no fine-tuning. |
+| **MCS-SQL** (2024) | Prompt sensitivity is a diversity source, not noise: sample widely, then aggregate. | Shuffled multi-prompts for linking and generation; confidence filtering by shared execution results; LLM multiple-choice selection. |
+| **ErrorLLM** (2026) | Refinement fails because errors are never modeled; detect and name error types before fixing. | Static detection plus dedicated error tokens for implicit semantic errors; error-guided structural refinement via prompting. |
+
+<div class="takeaway">
+<strong>The front matures from "split the prompt" to "learn and model the failure modes."</strong> DIN-SQL (2023) established decomposition prompting; MCS-SQL and SelECT-SQL (2024) layered multi-prompt ensembles and self-correcting CoT; LearNAT (2026) learns verifiable AST decompositions for 7B models, ErrorLLM (2026) models errors explicitly, and Royer et al. (2026) retargets generation to dialect-agnostic query plans.
+</div>
+
+<div class="sources">
+<b>Sources:</b> DIN-SQL (2023, NeurIPS), Sections 4.1–4.4 — decomposition modules and self-correction. MCS-SQL (2024, arXiv:2405.07467), Sections 3.1–3.3 — multi-prompt linking, generation, and selection. ErrorLLM (2026, KDD) — error modeling and error-guided refinement. Companion results: DTS-SQL (2024) — two-stage fine-tuning for small LLMs; SelECT-SQL (2024) — SS/MS CoT with ensemble; LearNAT (2026, ICLR) — AST-guided decomposition + margin-aware RL; Royer et al. (2026, EMNLP Findings) — query-plan target; KaSLA (2026, ICDE) — knapsack schema linking.
+</div>
+
+---
+
 ## Generate-then-Rank \& Self-Correction
 
 <div class="definition">
@@ -770,7 +848,7 @@ Schemes and research fronts form a one-to-one mapping.
 ## The Generate-then-Rank Pipeline
 
 <div class="definition">
-Across GAR, MetaSQL, PURPLE, and XiYan-SQL the workflow converges on the same four-stage pattern: <strong>control → generate → rank → repair</strong>. The papers differ mainly in <em>what</em> control signal is used and <em>how</em> candidates are ranked.
+Conventional four-stage workflow: <strong>control → generate → rank → repair</strong>. The papers differ mainly in <em>what</em> control signal is used and <em>how</em> candidates are ranked.
 </div>
 
 <div class="pipeline">
