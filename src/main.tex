@@ -152,8 +152,12 @@ are the six seed papers from the \texttt{txt2sql} collection.
 \draw[citeedge] (chess)   -- (macsql);
 \draw[citeedge] (chess)   -- (bird);
 \draw[citeedge] (apexsql)    -- (macsql);
+\draw[citeedge] (apexsql)    -- (bird);
+\draw[citeedge] (apexsql)    -- (spider2);
 \draw[citeedge] (learnretr)  -- (macsql);
+\draw[citeedge] (learnretr)  -- (spider2);
 \draw[citeedge] (li26beyond) -- (chess);
+\draw[citeedge] (li26beyond) -- (spider);
 
 % Generate-then-rank lineage
 \draw[citeedge] (gar)     -- (spider);

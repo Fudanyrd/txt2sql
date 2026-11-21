@@ -895,3 +895,96 @@ Conventional four-stage workflow: <strong>control → generate → rank → repa
 <div class="sources">
 <b>Sources:</b> MetaSQL (2024, ICDE), Sections 1 and 3 — metadata design, metadata-conditioned generation, two-stage ranking. PURPLE (2024, ICDE), Sections 1 and 3–4 — logical-operator-composition motivation, skeleton prediction, demonstration selection, database adaption. XiYan-SQL (2026, TKDE), Sections 1 and 3 — hybrid ensemble philosophy, multi-task/multi-format fine-tuning, candidate reorganization + selection model. GAR (2023, ICDE), Sections 1–3 — compositional generalization, SQL2NL dialect expressions, learning-to-rank.
 </div>
+
+---
+
+## Agentic LLM (Multi-Agent)
+
+<div class="definition">
+<strong>Agentic Text-to-SQL</strong> replaces the single model with a set of <strong>specialized LLM agents</strong>—for schema retrieval, decomposition, generation, execution, and repair.
+<!-- —that coordinate through a shared loop of <strong>plan → act → observe → revise</strong> -->
+</div>
+
+| | Mechanism | Consequence |
+|:--|:--|:--|
+| **Pro** | Split the task across specialist agents | Each agent owns one sub-problem (retrieval, generation, refinement), so the pipeline handles huge schemas and multi-step questions a monolithic prompt cannot (MAC-SQL) |
+| **Pro** | Close the loop with tools and execution feedback | Agents execute SQL and inspect real data, so errors are caught and corrected instead of guessed (MAC-SQL, APEX-SQL) |
+| **Pro** | Prune context on demand and decouple the model | A schema-selector agent cuts large catalogs to a sub-schema (~2% gain, ~5× fewer tokens); roles also run on a 7B open model for cost/privacy (CHESS, MAC-SQL) |
+| **Risk** | Many agents mean many LLM calls | Multi-round coordination multiplies latency and token cost; accuracy is bought with compute budget (CHESS) |
+| **Risk** | A single bad handoff poisons the result | A wrong retrieval, a dropped ambiguity, or a premature "done" propagates into a wrong final SQL (PLANPOOL) |
+| **Risk** | Coordination state is itself a new failure mode | Agents forget planned steps, retrieve irrelevant memory, or halt clarification early—correct execution can still mask unresolved intent (PLANPOOL, MERIT) |
+
+<div class="takeaway">
+<strong>Multi-agent decomposition helps only if every handoff and every "done" is guarded.</strong> The gains come from specialization and execution feedback; the costs are multiplied calls, error propagation, and a new class of coordination failures.
+</div>
+
+<div class="sources">
+<b>Sources:</b> MAC-SQL (2024) — degradation on huge databases and complex multi-step questions; external tools and model collaboration; Selector/Decomposer/Refiner roles and the SQL-Llama cost trade-off. CHESS (2024) — schema-selector token/accuracy trade-off and open-source privacy-preserving deployment. APEX-SQL (2026) — static-schema guessing vs. grounding in real data. MERIT (2026) — static and single-horizon memory mismatch. PLANPOOL (2026) — premature clarification termination and silent, unverified assumptions.
+</div>
+
+---
+
+## The Multi-Agent Text-to-SQL Workflow
+
+<div class="definition">
+Same <strong>agentic loop</strong>: <strong>retrieve & prune → generate → execute/verify → refine</strong> is adopted. They differ in <em>agents&apos; role</em> and <em>loop termination</em>—execution results, unit tests, data profiling, or user clarification.
+</div>
+
+<div class="pipeline">
+  <div class="step"><b>1 · Retrieve & prune</b>A Schema Selector + Information Retriever grounds the question and prunes the schema and values.</div>
+  <div class="step"><b>2 · Decompose & generate</b>A Decomposer splits complex questions into sub-questions; a generator emits candidate SQL.</div><!-- (MAC-SQL, CHESS)-->
+  <div class="step"><b>3 · Execute & verify</b>A Refiner inspects errors, a Unit Tester checks NL unit tests, or profiles real data.</div><!--  (MAC-SQL, CHESS, APEX-SQL)-->
+  <div class="step"><b>4 · Refine & iterate</b>Feedback drives revision—rewrite the SQL, re-ask the user, or re-explore.</div>
+</div>
+
+<div class="example">
+  <div class="panel nl">
+    <span class="label">Agent trace (MAC-SQL)</span>
+    <p><code>Selector</code> → keep <code>frpm</code>, <code>satscores</code>, <code>schools</code><br />
+    <code>Decomposer</code> → sub-Q1: average SAT rate; sub-Q2: names above it<br />
+    <code>Refiner</code> → SQL error on <code>Charter School (Y/N)</code> → fix predicate</p>
+  </div>
+  <div class="arrow">→</div>
+  <div class="panel sql">
+    <span class="label">Final SQL</span>
+    <p><code>SELECT sname FROM frpm JOIN satscores<br />ON CDSCode = cds<br />WHERE Charter = 1 AND rate > (SELECT AVG(...) ...);</code></p>
+  </div>
+</div>
+
+<div class="takeaway">
+<strong>The loop is shared; the differentiator is the feedback signal.</strong> Execution errors (MAC-SQL), LLM unit tests (CHESS), data profiling (APEX-SQL), and user clarification (PLANPOOL) each close the loop against a different kind of ground truth.
+</div>
+
+<div class="sources">
+<b>Sources:</b> MAC-SQL (2024, Fig. 2) — Selector → Decomposer → Refiner with SQL-execution feedback. CHESS (2024, Fig. 2) — IR/SS/CG/UT agent pipeline. APEX-SQL (2026, Fig. 1c) — hypothesis-verification loop over real data. PLANPOOL (2026) — clarification as part of the interactive loop.
+</div>
+
+---
+
+## Agentic LLM - Three Insights
+
+| Paper | Insight | Mechanism |
+|:--|:--|:--|
+| **MAC-SQL** (2024) | A monolithic prompt degrades on huge schemas and multi-step questions; break the task across collaborating specialist agents. | Three agents—Selector (sub-database), Decomposer (sub-questions + CoT), Refiner (execution feedback)—activated as needed. |
+| **APEX-SQL** (2026) | Static schemas make the model guess; shift from passive translation to agentic exploration grounded in real data. | Hypothesis-verification loop: logical planning, dual-pathway pruning, parallel data profiling, global synthesis; deterministic retrieval of exploration directives during generation. |
+| **PLANPOOL** (2026) | Correct execution ≠ resolved intent: agents silently drop ambiguities they already identified. | Externalize the clarification plan as a mutable question pool; every planned question must be asked or explicitly dropped before the SQL is submitted. |
+
+<div class="takeaway">
+<strong>The front matures from "who does what" to "what grounds the answer."</strong> MAC-SQL (2024) established agent collaboration; CHESS (2024) made it cost-efficient and privacy-preserving; APEX-SQL (2026) grounds it in data, MERIT (2026) in learned memory, and PLANPOOL (2026) in the user's actual intent.
+</div>
+
+<div class="sources">
+<b>Sources:</b> MAC-SQL (2024, NAACL), Sections 1 and 3 — agent roles, tools, and SQL-Llama. APEX-SQL (2026, KDD), Sections 1 and 3 — hypothesis-verification and exploration directives. PLANPOOL (2026, arXiv:2610.02739), Sections 1 and 4 — premature clarification termination and the question-pool mechanism. Companion results: CHESS (2024) — IR/SS/CG/UT with unit-test verification; MERIT (2026, EMNLP) — dual-level memory retrieval with RL.
+</div>
+
+---
+
+## Text-to-SQL Dataset \& Benchmark
+
+| Paper | \# Questions | Data Source | Evaluation Metric |
+|:--|:--|:--|:--|
+| **Spider** (2018) | 10,181 | 200 databases, 138 domains (human-labeled) | Exact-set match (EM) accuracy |
+| **BIRD** (2023) | 12,751 | 95 databases (33.4 GB), 37 domains | Execution accuracy (EX) + efficiency (VES) |
+| **Spider 2.0** (2024) | 632 | Enterprise databases (BigQuery, Snowflake; >1,000 cols) | Task success rate (execution-based) |
+| **SpotIt** (2026) | N/A | Reuses BIRD (10 methods) | Formal bounded equivalence verification |
+||||
