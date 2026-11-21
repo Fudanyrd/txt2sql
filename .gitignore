@@ -3,5 +3,7 @@
 *.log
 *.out
 *.snm
+*.bbl
+*.blg
 venv
 _extract

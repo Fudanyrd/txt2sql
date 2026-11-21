@@ -1,0 +1,46 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{natbib}
+
+\title{Counterexample-Guided Formal Verification for Agentic Text-to-SQL Refinement}
+
+\author{Anonymous}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+LLM-based Text-to-SQL agents solve database query tasks through an agentic loop of
+retrieval, candidate generation, verification, and refinement. Yet refining an
+erroneous SQL query without introducing new correctness bugs remains an open
+challenge, and the termination conditions used by prior systems---mere execution
+success \cite{wang2023macsql} or LLM-generated unit tests \cite{talaei2024chess}---are
+necessary but not sufficient to guarantee a correct query. Formal verification has
+been applied to Text-to-SQL only for \emph{offline evaluation}, where SpotIt checks
+bounded equivalence of a generated query against a human gold query
+\cite{klopfenstein2026spotit}; no prior method uses it to guide refinement online,
+where no gold query exists. We propose to close this gap with a
+formal-verification-guided refinement scheme: a \textbf{Critic} agent first states
+the correctness criteria a query must satisfy given the task and schema, and a
+bounded SMT-based verifier searches for a counterexample database that
+differentiates the candidate from those criteria. Any such counterexample is
+returned to the generator as concrete repair evidence, and verification---rather than
+execution success---terminates the loop. The central difficulty, and our primary
+research lever, is the \emph{specification gap}: soundness holds only relative to the
+correctness criteria, so our contribution is a tractable way to synthesize
+verifiable criteria from the question and schema---distinct from full SQL
+generation---together with counterexample-guided repair. In contrast to
+heuristic error detection \cite{hong26errorllm}, our verifier yields a sound
+differentiating witness. We plan to evaluate on the BIRD benchmark
+\cite{li2023bird} and hypothesize that counterexample-guided verification improves
+execution accuracy and, more importantly, closes the silent-error gap that
+test-based evaluation overlooks \cite{klopfenstein2026spotit}.
+\end{abstract}
+
+\bibliographystyle{plain}
+\bibliography{ref}
+
+\end{document}
