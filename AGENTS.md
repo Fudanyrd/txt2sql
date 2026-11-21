@@ -19,7 +19,7 @@ txt2sql/
 │   ├── build_tex.sh       # Compile a .tex file with XeLaTeX in Docker
 │   ├── download_arxiv.py  # Download arXiv PDFs listed in a BibTeX file
 │   └── lint_bib_lib.py    # Lint src/ref.bib against reference rules
-└── venv/                  # Local Python environment (git-ignored)
+└── venv/                  # Local Python environment (has bibtexparser, PyPDF2, matplotlib, etc.)
 ```
 
 `_extract/` is a temporary working directory and is git-ignored.

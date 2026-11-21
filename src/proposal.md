@@ -656,8 +656,77 @@ Schemes and research fronts form a one-to-one mapping.
 
 ## Schema Linking \& Neural Parsing
 
+<div class="definition">
+<strong>Schema linking</strong> grounds mentions in the question—entities, values, and implicit references—to schema elements: tables, columns, and the join paths between them. <strong>Neural parsing</strong> then turns the grounded question into SQL, either by learning the alignment inside an encoder–decoder or by consuming an explicitly linked schema.
+</div>
+
+| | Mechanism | Consequence |
+|:--|:--|:--|
+| **Pro** | Prune irrelevant tables and columns | Shorter prompts, smaller decoding space, lower inference cost |
+| **Pro** | Match names, values, and foreign keys | Grounds predicates and JOINs; fewer hallucinated columns and values |
+| **Pro** | Focus the parser on a compact schema | Higher accuracy on large, noisy, multi-table databases |
+| **Risk** | Any missed element is unrecoverable | A missing table, column, or join path makes the SQL wrong by construction |
+| **Risk** | Context can be removed with the noise | Even at high recall, simplified schemas may flip a correct query to incorrect (RSL-SQL's gain–loss trade-off) |
+| **Risk** | Linking is brittle under distribution shift | Synonyms, perturbations, and unseen schemas break the linker; errors compound downstream |
+
+<div class="takeaway">
+<strong>Schema linking is a precision–recall bet, not a free preprocessing step.</strong> Pruning helps only when the linker keeps every element the SQL needs—and keeps enough context to disambiguate it.
+</div>
+
 <div class="sources">
-RAT-SQL (2020, ACL); PICARD (2021, EMNLP); RESDSQL (2023, AAAI);
-    E-SQL (2024, arXiv:2409.16751); RSL-SQL (2024, arXiv:2411.00073);
-    Solid-SQL (2024, arXiv:2412.12522)
+<b>Sources:</b> RAT-SQL (2020) — name/value-based linking and schema generalization. RESDSQL (2023) — recall-versus-noise trade-off when filtering schema items. RSL-SQL (2024) — omission and structural-integrity risks; net benefit <code>y - x</code>. E-SQL (2024) — schema filtering can hurt strong LLMs. PICARD (2021) — schema-valid decoding as a complementary guard.
+</div>
+
+---
+
+## How Schema Linking Works: A Worked Example
+
+<div class="definition">
+<strong>Question:</strong> “What are flight numbers of flights departing from City ‘Aberdeen’?”<br />
+<strong>Schema:</strong> <code>airlines(uid, airline, abbreviation, country)</code>, <code>airports(city, airportcode, airportname, country, countryabbrev)</code>, <code>flights(airline, flightno, sourceairport, destairport)</code>
+</div>
+
+<div class="pipeline">
+  <div class="step"><b>1 · Detect mentions</b>“flight numbers” → <code>flights.flightno</code>; “flights” → <code>flights</code>; “City” → <code>airports.city</code>; “Aberdeen” → a value of <code>airports.city</code>.</div>
+  <div class="step"><b>2 · Link tables</b>“Aberdeen” can only be grounded through <code>airports</code>, so that table enters the linked set even though the question never says “airports”.</div>
+  <div class="step"><b>3 · Recover the join</b>“departing from” has no lexical match; the linker must use the foreign key <code>flights.sourceairport → airports.airportcode</code>.</div>
+  <div class="step"><b>4 · Filter and decode</b>Keep only <code>flights</code> and <code>airports</code>, rank their columns, and let the parser generate SQL.</div>
+</div>
+
+<div class="example">
+  <div class="panel nl">
+    <span class="label">Linked schema (RESDSQL-style)</span>
+    <p><code>flights: airline, flightno, sourceairport, destairport</code><br /><code>airports: city, airportcode, airportname</code><br /><code>FK: flights.sourceairport = airports.airportcode</code></p>
+  </div>
+  <div class="arrow">→</div>
+  <div class="panel sql">
+    <span class="label">Executable SQL</span>
+    <p><code>SELECT flights.flightno<br />FROM flights<br />JOIN airports<br />&nbsp;&nbsp;ON flights.sourceairport = airports.airportcode<br />WHERE airports.city = 'Aberdeen';</code></p>
+  </div>
+</div>
+
+<div class="takeaway">
+<strong>The hard part is not “Aberdeen”.</strong> Lexical matches are easy; the linker must also infer the unmentioned <code>airports</code> table and the <code>departing from</code> join—exactly the information that a purely name-based matcher misses.
+</div>
+
+<div class="sources">
+<b>Sources:</b> RESDSQL (2023, Figure 1) — the Aberdeen flights example, schema serialization, filtering, and skeleton-aware decoding. RAT-SQL (2020, Figure 1) — the same ambiguity problem framed as name-based and value-based linking over a schema graph.
+</div>
+
+---
+
+## Schema Linking - Three Insights
+
+| Paper | Insight | Linking mechanism | What it optimizes |
+|:--|:--|:--|:--|
+| **RAT-SQL** (2020) | memory-schema alignment should be a first-class relation in the parser. | Typed relation-aware self-attention; explicit memory–schema alignment matrices. | End-to-end parser accuracy and interpretable alignment. |
+| **RESDSQL** (2023) | Separate linking from skeleton parsing to decouple schema item and SQL keywords. | A cross-encoder ranks and filters tables/columns; the decoder emits the SQL skeleton first, then fills it. | Recall-versus-noise balance in preprocessing, plus structural guidance during decoding. |
+| **E-SQL** (2024) | Enrich the question instead of pruning the schema to work with stronger LLMs. | Candidate SQL → candidate predicates → question enrichment with tables, columns, values, and a construction plan → refinement; no schema filtering. | Semantic alignment and reasoning, especially on complex predicates and small LLMs. |
+
+<div class="takeaway">
+<strong>Same goal, three loci of control:</strong> inside the encoder (RAT-SQL), before the encoder (RESDSQL), and in the question/prompt (E-SQL). None chooses a linking strategy adaptively per query—the linking policy is fixed in advance.
+</div>
+
+<div class="sources">
+<b>Sources:</b> RAT-SQL (2020, ACL), Section 4.3 and Figure 1; RESDSQL (2023, AAAI), Sections 1 and 4; E-SQL (2024, arXiv:2409.16751), Sections 1 and 3.5. Companion results: RSL-SQL (2024) — bidirectional linking and the gain/loss analysis; Solid-SQL (2024) — robust schema-linking model with LLM-based data augmentation; PICARD (2021) — constrained decoding against invalid schema references.
 </div>
