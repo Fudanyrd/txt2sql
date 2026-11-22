@@ -14,7 +14,8 @@ txt2sql/
 │   ├── main.tex           # Text-to-SQL reference graph and grouped bibliography table
 │   ├── ref.bib            # BibTeX source of truth for all references
 │   ├── proposal.md        # Research-proposal slide deck (Marp markdown)
-│   └── main.{aux,log,out,pdf}  # LaTeX build artifacts (git-ignored)
+│   ├── proposal.tex       # Research-proposal LaTeX file
+│   └── *.{aux,log,out,pdf}  # LaTeX build artifacts (git-ignored)
 ├── scripts/
 │   ├── build_tex.sh       # Compile a .tex file with XeLaTeX in Docker
 │   ├── download_arxiv.py  # Download arXiv PDFs listed in a BibTeX file

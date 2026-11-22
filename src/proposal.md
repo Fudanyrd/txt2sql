@@ -354,15 +354,15 @@ style: |
 
 <div class="hero">
 
-<div class="kicker">Natural Language × Relational Data</div>
-
 <!-- FIXME: -->
 <div class="title">
-Research Proposal for a Text-to-SQL Method
+Counterexample-Guided Formal Verification for Agentic Text-to-SQL Refinement
 </div>
 
+<div class="kicker">A Research Proposal</div>
+
 <div class="author">
-Anonymous
+Rundong Yang, Jindi Yao, Yanwen Sun, Han Han, Yutong Chen, and Zhaohan Chu
 </div>
 
 </div>
@@ -1001,13 +1001,23 @@ Same <strong>agentic loop</strong>: <strong>retrieve & prune → generate → ex
 <strong>Agentic Text-to-SQL</strong> loops <strong>retrieval → candidate generation → verification → refinement</strong>. Its weakest link is <strong>when to stop</strong>: prior systems terminate on <em>execution success</em> (MAC-SQL) or <em>LLM-generated unit tests</em> (CHESS) — signals that are <strong>necessary but not sufficient</strong> to guarantee a correct query.
 </div>
 
+<br/>
 <div class="takeaway">
 <strong>The gap:</strong> formal verification is used only <em>offline</em> — SpotIt checks bounded equivalence against a <em>gold query</em>. <strong>No prior method uses it to guide refinement online</strong>, where no gold query exists.
 </div>
 
+<br/>
 <div class="definition">
 <strong>Our approach:</strong> a <strong>Critic Agent</strong> states the correctness criteria given the question and schema; a <strong>bounded SMT verifier</strong> searches for a <em>counterexample database</em> that differentiates the candidate from those criteria, and returns it as <strong>concrete repair evidence</strong>. <strong>Verification — not execution success — terminates the loop.</strong>
 </div>
+
+<div class="sources">
+<b>Sources:</b> MAC-SQL (2024) — execution-success termination. CHESS (2024) — LLM unit-test termination. SpotIt (2026) — offline bounded-equivalence verification against a gold query. ErrorLLM (2026) — heuristic error detection. BIRD (2023) — evaluation benchmark.
+</div>
+
+---
+
+## Contributions
 
 <div class="card-grid">
   <div class="card">
@@ -1027,11 +1037,6 @@ Same <strong>agentic loop</strong>: <strong>retrieve & prune → generate → ex
   </div>
 </div>
 
-<div class="sources">
-<b>Sources:</b> MAC-SQL (2024) — execution-success termination. CHESS (2024) — LLM unit-test termination. SpotIt (2026) — offline bounded-equivalence verification against a gold query. ErrorLLM (2026) — heuristic error detection. BIRD (2023) — evaluation benchmark.
-</div>
-
 ---
 
-## Methodology
-
+<h1>The End</h2>
