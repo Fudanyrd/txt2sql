@@ -163,6 +163,50 @@ verification (no counterexample) terminates the loop.}
 \label{fig:framework}
 \end{figure}
 
+\section{Experiments}
+
+We organize the evaluation around three research questions. \textbf{RQ1}
+(effectiveness): does counterexample-guided verification improve end-to-end
+accuracy over agentic baselines that terminate on execution success or LLM unit
+tests? \textbf{RQ2} (silent errors): does verification close the
+\emph{silent-error gap}---queries that execute correctly on the test database
+yet are not equivalent to the gold query---that execution-based evaluation
+overlooks \cite{klopfenstein2026spotit}? \textbf{RQ3} (ablation): what does each
+component (criteria synthesis, counterexample-guided repair, verification-based
+termination) contribute to the overall gain?
+
+\subsection{Experimental Setup}
+
+\paragraph{Dataset.} We evaluate on BIRD \cite{li2023bird}, a cross-domain
+Text-to-SQL benchmark of $12{,}751$ question--SQL pairs over $95$ databases
+spanning $37$ domains ($33.4$~GB), where each question is paired with external
+knowledge and a reference answer. We use the development set ($1{,}534$ examples)
+for hyperparameter selection and ablation studies, and report final numbers on
+the held-out test set. BIRD's large, noisy, multi-table schemas stress exactly
+the retrieval and refinement stages where execution-feedback agents most often
+fail \cite{wang2023macsql}.
+
+\paragraph{Evaluation Metrics.} Following BIRD, we report \emph{Execution
+Accuracy} (EX), the fraction of predictions whose execution result matches the
+gold result, and \emph{Valid Efficiency Score} (VES), which additionally
+discounts correct-but-inefficient queries. Because execution accuracy is known
+to overestimate quality \cite{ren_purple_2024}, we add a \emph{silent-error
+rate} (SER): the fraction of predictions that execute correctly against the test
+database but are not boundedly equivalent to the gold query, measured with the
+bounded-equivalence checker of SpotIt \cite{klopfenstein2026spotit}. SER isolates
+precisely the failure mode our verifier targets.
+
+\paragraph{Baselines.} We compare against (i)~\textbf{DIN-SQL}
+\cite{pourreza2023dinsql}, a non-agentic decomposed-prompting method representing
+the strong single-pass frontier; (ii)~\textbf{MAC-SQL} \cite{wang2023macsql}, an
+agentic loop that terminates on execution success; and (iii)~\textbf{CHESS}
+\cite{talaei2024chess}, an agentic loop that terminates on LLM-generated unit
+tests. Together these span the two termination signals our method replaces. All
+baselines share the same backbone LLM so that differences isolate the refinement
+signal. We also ablate our own method by (a)~replacing the SMT verifier with
+execution-success termination and (b)~removing counterexample-guided repair,
+leaving only criteria synthesis.
+
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{ref}
 
