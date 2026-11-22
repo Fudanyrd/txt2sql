@@ -2,7 +2,14 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
 \usepackage{natbib}
+\usepackage{url}
+\usepackage{hyperref}
 
 \title{Counterexample-Guided Formal Verification for Agentic Text-to-SQL Refinement}
 
@@ -23,7 +30,7 @@ been applied to Text-to-SQL only for \emph{offline evaluation}, where SpotIt che
 bounded equivalence of a generated query against a human gold query
 \cite{klopfenstein2026spotit}; no prior method uses it to guide refinement online,
 where no gold query exists. We propose to close this gap with a
-formal-verification-guided refinement scheme: a \textbf{Critic} agent first states
+formal-verification-guided refinement scheme: a \textbf{Critic Agent} first states
 the correctness criteria a query must satisfy given the task and schema, and a
 bounded SMT-based verifier searches for a counterexample database that
 differentiates the candidate from those criteria. Any such counterexample is
@@ -40,7 +47,123 @@ execution accuracy and, more importantly, closes the silent-error gap that
 test-based evaluation overlooks \cite{klopfenstein2026spotit}.
 \end{abstract}
 
-\bibliographystyle{plain}
+\section{Methodology}
+
+Figure~\ref{fig:framework} outlines the proposed framework. The outer loop is the
+standard agentic Text-to-SQL pipeline---\emph{retrieval}, \emph{candidate
+generation}, and \emph{verification}---which we take as given and leave unchanged
+(greyed in the figure). Our contribution is the
+\emph{formal-verification-guided refinement} that closes this loop:
+
+\begin{enumerate}
+  \item \textbf{Criteria synthesis.} A \emph{Critic Agent} consumes the
+        question and schema and states the \emph{correctness criteria}
+        $\varphi$ that a correct query must satisfy---a synthesis task distinct
+        from full SQL generation, closing the specification gap.
+  \item \textbf{Bounded verification.} A \emph{bounded SMT verifier} checks
+        whether the candidate $C$ satisfies $\varphi$ over all database
+        instances up to a fixed size bound, searching for a
+        \emph{counterexample database} that differentiates $C$ from $\varphi$.
+  \item \textbf{Counterexample-guided repair.} Any counterexample is returned
+        to the generator as \emph{concrete repair evidence}, driving the next
+        round of candidate generation.
+  \item \textbf{Termination.} When no counterexample exists, $C$ is certified
+        and the loop terminates---verification, rather than execution success,
+        is the stopping condition.
+\end{enumerate}
+
+\begin{figure}[!htbp]
+\centering
+
+\definecolor{cIn}{HTML}{0D3B66}
+\definecolor{cStd}{HTML}{546E7A}
+\definecolor{cFocus}{HTML}{1565C0}
+\definecolor{cSMT}{HTML}{6A1B9A}
+\definecolor{cCE}{HTML}{C62828}
+\definecolor{cRefine}{HTML}{EF6C00}
+\definecolor{cOK}{HTML}{2E7D32}
+
+\tikzset{
+  every node/.style={font=\footnotesize, align=center, inner sep=3pt},
+  input/.style={draw=cIn, fill=cIn!8, rounded corners=2pt, text width=2.4cm,
+                minimum height=0.7cm, line width=0.7pt},
+  stdgrp/.style={draw=cStd, dashed, fill=cStd!8, rounded corners=4pt,
+                 text width=5.4cm, minimum height=1.1cm, line width=0.7pt},
+  focusbox/.style={draw=cFocus, fill=cFocus!10, rounded corners=2pt,
+                   text width=2.6cm, minimum height=0.85cm},
+  smtbox/.style={draw=cSMT, fill=cSMT!10, rounded corners=2pt,
+                 text width=3.6cm, minimum height=1.05cm, line width=0.9pt},
+  cebox/.style={draw=cCE, fill=cCE!10, rounded corners=2pt,
+                text width=2.6cm, minimum height=0.8cm},
+  refinebox/.style={draw=cRefine, fill=cRefine!10, rounded corners=2pt,
+                    text width=2.6cm, minimum height=0.8cm},
+  okbox/.style={draw=cOK, fill=cOK!10, rounded corners=2pt,
+                text width=2.6cm, minimum height=0.8cm},
+  flow/.style={-{Stealth[length=2.2mm]}, draw=black!70, line width=0.6pt},
+  elabel/.style={font=\scriptsize, fill=white, inner sep=1pt, text=black!70},
+  sectionlabel/.style={font=\scriptsize\bfseries, text=cFocus},
+}
+
+\begin{tikzpicture}
+
+% background highlight for our contribution
+\draw[fill=cFocus!4, draw=cFocus!30, rounded corners=6pt, line width=0.5pt]
+  (-4.4, -4.15) rectangle (4.4, -11.2);
+\node[sectionlabel, anchor=north west] at (-4.4, -4.1)
+  {Our contribution: formal-verification-guided refinement};
+
+% ---- inputs ----
+\node[input] (nl) at (-1.7, 0.0) {Natural-language\\question};
+\node[input] (sc) at ( 1.7, 0.0) {Database\\schema};
+
+% ---- standard stages (single container, not our focus) ----
+\node[stdgrp] (std) at (0, -2.7)
+  {Standard agentic stages \textbf{(not our focus)}\\[1pt]
+   retrieval $\rightarrow$ candidate generation $\rightarrow$ verification};
+
+% ---- our contribution ----
+\node[focusbox] (critic) at (-2.2, -5.4)
+  {Critic Agent\\ states correctness\\ criteria (given\\ question $+$ schema)};
+\node[focusbox] (crit) at (2.2, -5.4)
+  {Correctness\\ criteria $\varphi$};
+\node[smtbox] (smt) at (0, -7.4)
+  {Bounded SMT verifier\\ $C \models \varphi$ ?\\ (bounded counterexample search)};
+\node[cebox] (ce) at (-2.4, -9.2)
+  {Counterexample\\ database (SAT)};
+\node[okbox] (ok) at (2.4, -9.2)
+  {No counterexample\\ (UNSAT $=$ verified)};
+\node[refinebox] (refine) at (-2.4, -10.6)
+  {Repair evidence\\ $\rightarrow$ refine candidate};
+\node[okbox] (final) at (2.4, -10.6)
+  {Final SQL\\ (terminate)};
+
+% ---- edges ----
+\draw[flow] (nl.south) -- (std.north);
+\draw[flow] (sc.south) -- (std.north);
+\draw[flow] (std.south) -- node[elabel, midway]{candidate SQL $C$} (smt.north);
+\draw[flow] (critic.east) -- (crit.west);
+\draw[flow] (crit.south) -- (smt.north east);
+\draw[flow] (smt.south) -- (ce.north);
+\draw[flow] (smt.south) -- (ok.north);
+\draw[flow] (ce.south) -- (refine.north);
+\draw[flow] (ok.south) -- (final.north);
+
+% loop back: counterexample-guided regeneration
+\draw[flow] (refine.west) -- (-4.8, -10.1) -- (-4.8, -2.7) -- (std.west);
+\node[elabel, rotate=90] at (-4.95, -6.4) {counterexample-guided regeneration};
+
+\end{tikzpicture}
+\caption{Proposed framework: an agentic Text-to-SQL loop whose standard stages
+(retrieval, candidate generation, verification) are taken as given (greyed) and
+whose refinement is guided by formal verification. A Critic Agent synthesizes
+correctness criteria $\varphi$ from the question and schema; a bounded SMT
+verifier searches for a counterexample database that differentiates the
+candidate from $\varphi$, returned to the generator as repair evidence;
+verification (no counterexample) terminates the loop.}
+\label{fig:framework}
+\end{figure}
+
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{ref}
 
 \end{document}
