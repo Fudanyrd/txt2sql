@@ -1039,4 +1039,67 @@ Same <strong>agentic loop</strong>: <strong>retrieve & prune → generate → ex
 
 ---
 
+## Research Questions
+
+<div class="card-grid">
+
+<div class="card">
+<span class="badge">RQ1</span>
+<h3>Effectiveness</h3>
+<p>Does counterexample-guided verification improve end-to-end accuracy over agentic baselines that terminate on execution success or LLM unit tests?</p>
+</div>
+
+<div class="card">
+<span class="badge teal">RQ2</span>
+<h3>Silent errors</h3>
+<p>Does verification close the <strong>silent-error gap</strong> — queries that execute correctly on the test database yet are not equivalent to the gold query — that execution-based evaluation overlooks?</p>
+</div>
+
+<div class="card">
+<span class="badge green">RQ3</span>
+<h3>Ablation</h3>
+<p>What does each component — criteria synthesis, counterexample-guided repair, verification-based termination — contribute to the overall gain?</p>
+</div>
+
+</div>
+
+<div class="takeaway">
+<strong>Three questions, one target:</strong> show that formal verification moves the needle on accuracy, isolates the failure mode execution-based metrics miss, and attributes the gain to each part of the loop.
+</div>
+
+<div class="sources">
+<b>Sources:</b> <code>src/proposal.tex</code>, "Experiments" — RQ1 (effectiveness), RQ2 (silent errors), RQ3 (ablation).
+</div>
+
+---
+
+## Experimental Setup
+
+<div class="definition">
+<strong>Dataset.</strong> <strong>BIRD</strong> — 12,751 question–SQL pairs over 95 databases spanning 37 domains (33.4 GB), each with external knowledge and a reference answer. We tune and ablate on the <strong>development set (1,534 examples)</strong> and report final numbers on the held-out <strong>test set</strong>. BIRD's large, noisy, multi-table schemas stress exactly the retrieval and refinement stages where execution-feedback agents most often fail.
+</div>
+
+| Metric | Definition | Why it matters |
+|:--|:--|:--|
+| **EX** | Execution accuracy — predictions whose execution matches the gold result | BIRD's primary score |
+| **VES** | Valid efficiency score — EX discounted for correct-but-inefficient queries | Captures efficiency, not just correctness |
+| **SER** | Silent-error rate — execute correctly but not boundedly equivalent to gold (via SpotIt) | Isolates the failure mode our verifier targets |
+
+<div class="chips">
+  <div class="chip">DIN-SQL — non-agentic single-pass frontier</div>
+  <div class="chip">MAC-SQL — terminates on execution success</div>
+  <div class="chip">CHESS — terminates on LLM unit tests</div>
+  <div class="chip">Same backbone LLM across baselines</div>
+</div>
+
+<div class="takeaway">
+<strong>Baselines span both termination signals we replace</strong> (execution success, LLM unit tests). Two self-ablations isolate our additions: (a) replace the SMT verifier with execution-success termination, and (b) remove counterexample-guided repair, leaving only criteria synthesis.
+</div>
+
+<div class="sources">
+<b>Sources:</b> BIRD (Li et al., 2023) — dataset and EX/VES. SpotIt (Klopfenstein et al., 2026) — bounded-equivalence checker for SER. DIN-SQL (Pourreza & Rafiei, 2023), MAC-SQL (Wang et al., 2024), CHESS (Talaei et al., 2024) — baselines. PURPLE (Ren et al., 2024) — execution accuracy overestimates quality.
+</div>
+
+---
+
 <h1>The End</h2>
