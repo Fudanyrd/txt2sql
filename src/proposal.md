@@ -362,7 +362,7 @@ Counterexample-Guided Formal Verification for Agentic Text-to-SQL Refinement
 <div class="kicker">A Research Proposal</div>
 
 <div class="author">
-Rundong Yang, Jindi Yao, Yanwen Sun, Han Han, Yutong Chen, and Zhaohan Chu
+Rundong Yang, Jindi Yao, Wenyan Sun, Han Han, Yutong Chen, and Zhaohan Chu
 </div>
 
 </div>
