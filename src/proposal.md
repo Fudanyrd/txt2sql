@@ -1103,3 +1103,36 @@ Same <strong>agentic loop</strong>: <strong>retrieve & prune → generate → ex
 ---
 
 <h1>The End</h2>
+
+<!-- 
+
+## FAQ 
+
+1. The methodology of your Research Proposal is missing.
+
+Answer: Good catch! We are still working on it with crucial designs remain
+to be determined.
+
+2. Any publicly available artifacts (e.g. your paper list)?
+
+Answer: these can be found at <a href="https://github.com/Fudanyrd/txt2sq>Github: Fudanyrd/txt2sql</a>.
+
+3. Your Literature Review involves only 33 papers -- too few to support you
+   trend analysis findings.
+
+Answer: You are absolutely right in that regard -- our findings may be biased. However,
+we tried our best to find (and keep) **most relevant** papers, far beyond the course
+provided seeds.
+
+4. You do not explain the scheme "SLM–LLM collaboration & open-source" at all.
+
+Answer: We apologize for this negligence. However, we assume this can be justified by
+limited presentation time (~20 minutes) and its low relevance to our research proposal.
+
+x. Your work has a strong AI flavor.
+
+Answer: While literature review is done by AI, searching relevant papers and forming the idea of
+research proposal are done ourselves. Also, literature review is guided by a human-written skill
+(therefore each part of them has similar structure).
+
+-->
