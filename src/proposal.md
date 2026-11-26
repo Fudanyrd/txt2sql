@@ -761,20 +761,20 @@ Schemes and research fronts form a one-to-one mapping.
 ## The Decomposed Prompting Pipeline
 
 <div class="definition">
-<strong>Question</strong><br />What are the names of employees who earn more than their direct managers?
+The workflow converges on the same four stages: <strong>link → decompose → generate → correct/select</strong>. The papers differ in <em>task decomposition</em> and <em>aggregating/repairing candidates</em>.
 </div>
 
 <div class="pipeline">
-  <div class="step"><b>1 · Link the schema</b>Find the name, salary, and manager ID in the employees table.</div>
-  <div class="step"><b>2 · Classify &amp; decompose</b>Plan a non-nested query. Pair each employee with their manager, then compare salaries.</div>
-  <div class="step"><b>3 · Generate SQL</b>Write a self-join using <code>e</code> for the employee and <code>m</code> for the manager.</div>
-  <div class="step"><b>4 · Check &amp; refine</b>Check the join key and the salary comparison. Revise them if needed.</div>
+  <div class="step"><b>1 · Schema link</b>Ground the question in relevant tables and columns.</div><!-- —via shuffled multi-prompts (MCS-SQL) or knapsack-optimal linking (KaSLA) -->
+  <div class="step"><b>2 · Classify & decompose</b>Label difficulty and split into sub-tasks: easy/non-nested/nested, CoT, or AST-guided.</div><!-- (DIN-SQL) (SelECT-SQL) (LearNAT)-->
+  <div class="step"><b>3 · Generate candidates</b>Emit SQL from class-specific prompts, producing candidate queries.</div>
+  <div class="step"><b>4 · Correct & select</b>Self-correct, then filter and choose.</div>
 </div>
 
 <div class="example">
   <div class="panel nl">
-    <span class="label">Reading the query</span>
-    <p><code>ON</code> matches each employee to their own manager. <code>WHERE</code> keeps employees who earn more. <code>SELECT</code> returns their names.</p>
+    <span class="label">Decomposed sub-tasks</span>
+    <p><code>1</code> link <code>employees.salary</code>, self-join on <code>manager</code><br /><code>2</code> classify: non-nested (join, no subquery)<br /><code>3</code> generate join + salary comparison<br /><code>4</code> correct join condition & predicate</p>
   </div>
   <div class="arrow">→</div>
   <div class="panel sql">
@@ -788,11 +788,11 @@ WHERE e.salary &gt; m.salary;</code></pre>
 </div>
 
 <div class="takeaway">
-<strong>Check the meaning of the comparison.</strong> Using <code>&gt;=</code> would also return employees who earn exactly as much as their manager.
+<strong>The decisive choices are the split and the aggregator.</strong> Decomposition alone helps, but the state-of-the-art comes from combining a task-aware split with candidate selection or error-driven repair.
 </div>
 
 <div class="sources">
-<b>Source:</b> Pipeline adapted from DIN-SQL (2023, Fig. 2).
+<b>Sources:</b> DIN-SQL (2023, Fig. 2) — schema linking → classification & decomposition → class-specific generation → self-correction. MCS-SQL (2024, Fig. 1) — schema linking → multiple generation → filtering → multiple-choice selection. SelECT-SQL (2024) — SS/MS CoT, self-correction, and ensemble. LearNAT (2026, Fig. 1) — AST-guided verifiable decomposition. ErrorLLM (2026) — static detection, error tokens, error-guided refinement. KaSLA (2026) — hierarchical table-then-column knapsack linking.
 </div>
 
 ---
@@ -801,16 +801,16 @@ WHERE e.salary &gt; m.salary;</code></pre>
 
 | Paper | Insight | Mechanism |
 |:--|:--|:--|
-| **DIN-SQL** (2023) | **Decompose the task.** | Use schema links and the query type to guide SQL generation, then apply self-correction. |
-| **MCS-SQL** (2024) | **Generate and select.** | Use multiple prompts, filter candidates based on agreement among execution results, then ask the LLM to choose. |
-| **ErrorLLM** (2026) | **Diagnose before repairing.** | Use rules to catch obvious errors and a trained model to detect subtler semantic errors. Use the detected error type to guide the repair. |
+| **DIN-SQL** (2023) | Break the declarative SQL task into sub-problems and feed each sub-solution forward. | Four prompting modules—schema linking, difficulty classification & decomposition, class-specific generation, self-correction—all in-context, no fine-tuning. |
+| **MCS-SQL** (2024) | Prompt sensitivity is a diversity source, not noise: sample widely, then aggregate. | Shuffled multi-prompts for linking and generation; confidence filtering by shared execution results; LLM multiple-choice selection. |
+| **ErrorLLM** (2026) | Refinement fails because errors are never modeled; detect and name error types before fixing. | Static detection plus dedicated error tokens for implicit semantic errors; error-guided structural refinement via prompting. |
 
 <div class="takeaway">
-These methods improve different decisions: <strong>how to decompose the task, which candidate to choose, and what to repair.</strong>
+<strong>The front matures from "split the prompt" to "learn and model the failure modes."</strong> DIN-SQL (2023) established decomposition prompting; MCS-SQL and SelECT-SQL (2024) layered multi-prompt ensembles and self-correcting CoT; LearNAT (2026) learns verifiable AST decompositions for 7B models, ErrorLLM (2026) models errors explicitly, and Royer et al. (2026) retargets generation to dialect-agnostic query plans.
 </div>
 
 <div class="sources">
-<b>Sources:</b> DIN-SQL (2023, Sections 4.1–4.4), MCS-SQL (2024 preprint, Sections 3.1–3.3), ErrorLLM (2026).
+<b>Sources:</b> DIN-SQL (2023, NeurIPS), Sections 4.1–4.4 — decomposition modules and self-correction. MCS-SQL (2024, arXiv:2405.07467), Sections 3.1–3.3 — multi-prompt linking, generation, and selection. ErrorLLM (2026, KDD) — error modeling and error-guided refinement. Companion results: DTS-SQL (2024) — two-stage fine-tuning for small LLMs; SelECT-SQL (2024) — SS/MS CoT with ensemble; LearNAT (2026, ICLR) — AST-guided decomposition + margin-aware RL; Royer et al. (2026, EMNLP Findings) — query-plan target; KaSLA (2026, ICDE) — knapsack schema linking.
 </div>
 
 ---
