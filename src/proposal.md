@@ -761,6 +761,7 @@ Schemes and research fronts form a one-to-one mapping.
 ## The Decomposed Prompting Pipeline
 
 <div class="definition">
+<strong>Question</strong> What are the names of employees who earn more than their direct managers?<br />
 The workflow converges on the same four stages: <strong>link → decompose → generate → correct/select</strong>. The papers differ in <em>task decomposition</em> and <em>aggregating/repairing candidates</em>.
 </div>
 
@@ -774,7 +775,12 @@ The workflow converges on the same four stages: <strong>link → decompose → g
 <div class="example">
   <div class="panel nl">
     <span class="label">Decomposed sub-tasks</span>
-    <p><code>1</code> link <code>employees.salary</code>, self-join on <code>manager</code><br /><code>2</code> classify: non-nested (join, no subquery)<br /><code>3</code> generate join + salary comparison<br /><code>4</code> correct join condition & predicate</p>
+    <p style="font-size: 17px;">
+      <strong>1. Link</strong> Find <code>name</code>, <code>salary</code>, <code>manager_id</code>, and <code>id</code>.<br />
+      <strong>2. Classify</strong> Pair employees and managers with a self-join.<br />
+      <strong>3. Generate</strong> Return names where employee pay is higher.<br />
+      <strong>4. Check</strong> Verify the manager match and the strict <code>&gt;</code>.
+    </p>
   </div>
   <div class="arrow">→</div>
   <div class="panel sql">
