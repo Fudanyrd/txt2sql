@@ -775,11 +775,11 @@ The workflow converges on the same four stages: <strong>link → decompose → g
 <div class="example">
   <div class="panel nl">
     <span class="label">Decomposed sub-tasks</span>
-    <p style="font-size: 17px;">
-      <strong>1. Link</strong> Find <code>name</code>, <code>salary</code>, <code>manager_id</code>, and <code>id</code>.<br />
-      <strong>2. Classify</strong> Pair employees and managers with a self-join.<br />
-      <strong>3. Generate</strong> Return names where employee pay is higher.<br />
-      <strong>4. Check</strong> Verify the manager match and the strict <code>&gt;</code>.
+    <p style="font-size: 16px; line-height: 1.3;">
+      <strong>1. Link</strong> Name → <code>name</code>, pay → <code>salary</code>, manager → <code>manager_id</code>.<br />
+      <strong>2. Classify &amp; decompose</strong> Non-nested. Match each employee to their manager, then compare pay.<br />
+      <strong>3. Generate</strong> Write the plan in SQL with <code>JOIN</code>, <code>WHERE</code>, and <code>SELECT</code>.<br />
+      <strong>4. Correct</strong> Check the manager match and strict <code>&gt;</code> against the question.
     </p>
   </div>
   <div class="arrow">→</div>
