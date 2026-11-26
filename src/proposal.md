@@ -736,24 +736,24 @@ Schemes and research fronts form a one-to-one mapping.
 ## LLM Prompting \& Decomposition
 
 <div class="definition">
-<strong>LLM prompting / decomposition</strong> uses <strong>staged chain of prompts</strong>: ground the question in the schema, <strong>break the task into sub-tasks</strong>, generate candidate queries, then correct/select the best.
+<strong>Decomposed prompting</strong> gives the LLM a series of smaller tasks, from identifying the relevant schema to checking the generated SQL.
 </div>
 
 | | Mechanism | Consequence |
 |:--|:--|:--|
-| **Pro** | Decompose generation into linking, classification, generation, correction | Splits a hard declarative task into sub-problems the LLM solves more reliably (DIN-SQL: ~10% gain) |
-| **Pro** | Few-shot prompting instead of fine-tuning | No task-specific data or heavy compute; decomposition also lifts small open models (DTS-SQL, LearNAT) |
-| **Pro** | Multi-prompt sampling + self-correction / error modeling | Prompt sensitivity becomes diversity; selection and repair recover the best query (MCS-SQL, SelECT-SQL, ErrorLLM) |
-| **Risk** | LLMs are sensitive to prompt wording and order | The same question yields different SQL; accuracy is brittle across prompts |
-| **Risk** | Decomposing declarative SQL is ill-defined | Sub-task boundaries are unclear; an intermediate error propagates to the final query |
-| **Risk** | Multi-round prompts cost tokens/latency; self-correction can hallucinate | Gains trade against inference budget; low detection precision can corrupt a correct SQL |
+| **Pro** | Break the task into smaller steps | The model can identify the schema and plan the query before writing SQL. |
+| **Pro** | Give examples in the prompt (DIN-SQL) | The model uses those examples without task-specific fine-tuning. |
+| **Pro** | Try multiple prompt variations | Different prompts can produce different SQL candidates to choose from. |
+| **Risk** | Change wording or example order | Even small prompt changes can affect accuracy. |
+| **Risk** | Carry intermediate results forward | An early mistake, such as choosing the wrong join key, can reach the final SQL. |
+| **Risk** | Add generation or repair rounds | More calls use more tokens and take longer. Repair can introduce errors. |
 
 <div class="takeaway">
-<strong>Decomposition pays off only if the split is right and the loop is closed.</strong> Otherwise prompt noise, propagation of intermediate errors, and self-correction hallucination erode the accuracy gains.
+<strong>DIN-SQL with GPT-4 on the Spider development set</strong><br />Execution accuracy rose from <strong>67.4% to 74.2%</strong> compared with simple few-shot prompting.
 </div>
 
 <div class="sources">
-<b>Sources:</b> DIN-SQL (2023) — prompting avoids training data and fine-tuning; sub-task decomposition gains ~10%. DTS-SQL (2024) and LearNAT (2026) — privacy/cost of proprietary models and test-time scaling cost. MCS-SQL (2024) — prompt sensitivity exploited as diversity. SelECT-SQL (2024) — CoT + self-correction + ensemble and its token cost. ErrorLLM (2026) — self-debugging fails and self-correction hallucinates. Yuan et al. / KaSLA (2026) — missing or redundant schema elements propagate to SQL.
+<b>Sources:</b> DIN-SQL (2023, Table 4a), MCS-SQL (2024), SelECT-SQL (2024), ErrorLLM (2026). DTS-SQL (2024) and LearNAT (2026) study decomposition with training.
 </div>
 
 ---
@@ -761,6 +761,7 @@ Schemes and research fronts form a one-to-one mapping.
 ## The Decomposed Prompting Pipeline
 
 <div class="definition">
+<strong>Question</strong> What are the names of employees who earn more than their direct managers?<br />
 The workflow converges on the same four stages: <strong>link → decompose → generate → correct/select</strong>. The papers differ in <em>task decomposition</em> and <em>aggregating/repairing candidates</em>.
 </div>
 
@@ -774,12 +775,21 @@ The workflow converges on the same four stages: <strong>link → decompose → g
 <div class="example">
   <div class="panel nl">
     <span class="label">Decomposed sub-tasks</span>
-    <p><code>1</code> link <code>employees.salary</code>, self-join on <code>manager</code><br /><code>2</code> classify: non-nested (join, no subquery)<br /><code>3</code> generate join + salary comparison<br /><code>4</code> correct join condition & predicate</p>
+    <p style="font-size: 16px; line-height: 1.3;">
+      <strong>1. Link</strong> Name → <code>name</code>, pay → <code>salary</code>, manager → <code>manager_id</code>.<br />
+      <strong>2. Classify &amp; decompose</strong> Non-nested. Match each employee to their manager, then compare pay.<br />
+      <strong>3. Generate</strong> Write the plan in SQL with <code>JOIN</code>, <code>WHERE</code>, and <code>SELECT</code>.<br />
+      <strong>4. Correct</strong> Check the manager match and strict <code>&gt;</code> against the question.
+    </p>
   </div>
   <div class="arrow">→</div>
   <div class="panel sql">
     <span class="label">Final SQL</span>
-    <p><code>SELECT e.name FROM employees e<br />JOIN employees m ON e.manager_id = m.id<br />WHERE e.salary > m.salary;</code></p>
+    <pre style="margin: 0; padding: 0; border: 0; background: transparent;"><code>SELECT e.name
+FROM employees AS e
+JOIN employees AS m
+  ON e.manager_id = m.id
+WHERE e.salary &gt; m.salary;</code></pre>
   </div>
 </div>
 
